@@ -6,16 +6,11 @@ import { Header } from "@/components/header";
 import { ServerCard } from "@/components/server-card";
 import type { Status } from "@/components/status-dot";
 import { SERVER_APPS, MY_PROJECTS } from "@/lib/config";
-import { AIAlerts } from "@/components/ai-alerts";
 import { useUser } from "@/firebase";
 import { SystemOverview } from "@/components/system-overview";
 import { Separator } from "@/components/ui/separator";
 
 const allServices = [...SERVER_APPS, ...MY_PROJECTS];
-const serverNames = allServices.reduce((acc, srv) => {
-  acc[srv.id] = srv.name;
-  return acc;
-}, {} as Record<string, string>);
 
 export default function DashboardPage() {
   const { user, isUserLoading } = useUser();
@@ -66,8 +61,6 @@ export default function DashboardPage() {
     }
   }, [checkAllStatuses, user]);
 
-  const hasOfflineServer = Object.values(statuses).some(s => s === 'offline');
-  
   if (isUserLoading || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -87,12 +80,6 @@ export default function DashboardPage() {
         </section>
 
         <Separator className="my-8" />
-        
-        {hasOfflineServer && (
-           <div className="mb-8">
-             <AIAlerts statuses={statuses} serverNames={serverNames} />
-           </div>
-        )}
 
         <section className="mb-12">
           <h2 className="mb-6 font-headline text-3xl font-bold">Server Apps</h2>
