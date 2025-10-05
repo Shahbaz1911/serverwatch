@@ -174,7 +174,7 @@ const CardNav: React.FC<CardNavProps> = ({
   return (
     <div
       className={cn(
-        'card-nav-container absolute left-1/2 -translate-x-1/2 w-[95%] max-w-[900px] z-[99] top-4 md:top-6',
+        'card-nav-container absolute left-1/2 -translate-x-1/2 w-full max-w-md md:max-w-[900px] z-[99] top-4 md:top-6 px-4 md:px-0',
         className
       )}
     >
@@ -217,7 +217,7 @@ const CardNav: React.FC<CardNavProps> = ({
           </div>
           
           <div className="flex items-center gap-2 order-3">
-            <div className="card-nav-profile-action md:hidden">
+            <div className="card-nav-profile-action">
                 {profileAction}
             </div>
             <div className="card-nav-cta-button hidden md:inline-flex border-0 rounded-lg px-2 h-full font-medium cursor-pointer transition-colors duration-300">
@@ -235,11 +235,12 @@ const CardNav: React.FC<CardNavProps> = ({
           {(items || []).slice(0, 3).map((item, idx) => (
             <div
               key={`${item.label}-${idx}`}
-              className="nav-card select-none relative flex flex-col gap-2 p-3 md:p-4 rounded-lg min-w-0 flex-1 h-auto min-h-[60px] md:h-full md:min-h-0 border border-primary/20"
+              className="nav-card select-none relative flex flex-col gap-2 p-3 md:p-4 rounded-lg min-w-0 flex-1 h-auto min-h-[60px] md:h-full md:min-h-0 border"
               ref={setCardRef(idx)}
               style={{
-                background: item.bgColor,
+                background: `linear-gradient(145deg, ${item.bgColor}, hsl(var(--card)))`,
                 color: item.textColor,
+                borderColor: 'hsl(var(--primary))'
               }}
             >
               <div className="nav-card-label font-headline tracking-tight text-lg md:text-xl">

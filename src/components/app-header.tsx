@@ -23,7 +23,7 @@ export function AppHeader() {
   const navItems = [
     {
       label: "About",
-      bgColor: "hsl(var(--card))",
+      bgColor: "hsl(var(--background))",
       textColor: "hsl(var(--foreground))",
       links: [
         { label: "Company", href: "#", ariaLabel: "About Company" },
@@ -32,7 +32,7 @@ export function AppHeader() {
     },
     {
       label: "Projects", 
-      bgColor: "hsl(var(--card))",
+      bgColor: "hsl(var(--background))",
       textColor: "hsl(var(--foreground))",
       links: [
         { label: "Featured", href: "#", ariaLabel: "Featured Projects" },
@@ -41,7 +41,7 @@ export function AppHeader() {
     },
     {
       label: "Contact",
-      bgColor: "hsl(var(--card))",
+      bgColor: "hsl(var(--background))",
       textColor: "hsl(var(--foreground))",
       links: [
         { label: "Email", href: "#", ariaLabel: "Email us" },
@@ -85,7 +85,7 @@ export function AppHeader() {
                         </Avatar>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={handleLogout}>
+                        <DropdownMenuItem onClick={handleLogout} className="md:hidden">
                             <LogOut className="mr-2 h-4 w-4" />
                             <span>Logout</span>
                         </DropdownMenuItem>
