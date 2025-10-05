@@ -6,11 +6,16 @@ import { ServerCard } from "@/components/server-card";
 import type { Status } from "@/components/status-dot";
 import { SERVER_APPS, MY_PROJECTS } from "@/lib/config";
 import { useUser } from "@/firebase";
-import { SystemOverview } from "@/components/system-overview";
 import { Separator } from "@/components/ui/separator";
 import { Hero } from "@/components/hero";
+import { AIAlerts } from "@/components/ai-alerts";
 
 const allServices = [...SERVER_APPS, ...MY_PROJECTS];
+const serviceNames = allServices.reduce((acc, srv) => {
+  acc[srv.id] = srv.name;
+  return acc;
+}, {} as Record<string, string>);
+
 
 export default function DashboardPage() {
   const { user, isUserLoading } = useUser();
@@ -23,6 +28,8 @@ export default function DashboardPage() {
     return initialStatuses;
   });
 
+  const [initialLoad, setInitialLoad] = useState(true);
+
   useEffect(() => {
     if (!isUserLoading && !user) {
       router.push("/");
@@ -34,11 +41,13 @@ export default function DashboardPage() {
       try {
         const res = await fetch(`/api/status?url=${encodeURIComponent(srv.url)}`);
         if (!res.ok) {
+          console.error(`Status check failed for ${srv.name}: ${res.status}`);
           return { id: srv.id, status: 'offline' as Status };
         }
         const data = await res.json();
         return { id: srv.id, status: data.status as Status };
       } catch (error) {
+        console.error(`Error checking status for ${srv.name}:`, error);
         return { id: srv.id, status: 'offline' as Status };
       }
     });
@@ -51,7 +60,8 @@ export default function DashboardPage() {
         });
         return newStatuses;
     });
-  }, []);
+    if(initialLoad) setInitialLoad(false);
+  }, [initialLoad]);
 
   useEffect(() => {
     if(user) {
@@ -61,7 +71,7 @@ export default function DashboardPage() {
     }
   }, [checkAllStatuses, user]);
 
-  if (isUserLoading || !user) {
+  if (isUserLoading || !user || initialLoad) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <p>Loading...</p>
@@ -69,16 +79,19 @@ export default function DashboardPage() {
     );
   }
 
+  const anyOffline = Object.values(statuses).some(s => s === 'offline');
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <main className="container mx-auto p-4 md:p-8 pt-24 md:pt-32">
         
         <Hero />
 
-        <section className="my-8">
-            <h2 className="mb-6 font-headline text-3xl font-bold">System Overview</h2>
-            <SystemOverview />
-        </section>
+        {anyOffline && (
+          <section className="my-8">
+            <AIAlerts statuses={statuses} serverNames={serviceNames} />
+          </section>
+        )}
 
         <Separator className="my-8" />
 

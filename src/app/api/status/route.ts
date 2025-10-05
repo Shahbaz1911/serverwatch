@@ -25,11 +25,17 @@ export async function GET(request: Request) {
     if (response.ok) {
       return NextResponse.json({ status: 'online' });
     } else {
-      return NextResponse.json({ status: 'offline' });
+      return NextResponse.json({ status: 'offline', reason: `HTTP status ${response.status}` }, { status: 200 });
     }
-  } catch (error) {
+  } catch (error: any) {
     clearTimeout(timeoutId);
-    // This catches network errors, timeouts, DNS errors, etc.
-    return NextResponse.json({ status: 'offline' });
+    
+    // This catches network errors, timeouts, DNS errors, connection refused, etc.
+    // These are strong indicators that the service is offline.
+    if (error.name === 'AbortError') {
+      return NextResponse.json({ status: 'offline', reason: 'Timeout' }, { status: 200 });
+    }
+    
+    return NextResponse.json({ status: 'offline', reason: 'Network error or service is down' }, { status: 200 });
   }
 }
