@@ -1,0 +1,62 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user account within the ServerWatch application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the User entity."
+        },
+        "username": {
+          "type": "string",
+          "description": "The user's username."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's email address.",
+          "format": "email"
+        },
+        "name": {
+          "type": "string",
+          "description": "The user's full name."
+        }
+      },
+      "required": [
+        "id",
+        "username",
+        "email",
+        "name"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profile data. Path-based ownership ensures only the user can access their own data.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique ID of the user, obtained from Firebase Authentication."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "This Firestore data structure is designed to support the ServerWatch application, focusing on user authentication and server/project status monitoring. It prioritizes security, scalability, and debuggability using denormalization and structural segregation.\n\n**Authorization Independence:** User data is stored in `/users/{userId}`, which provides a clear path-based ownership model, making security rules straightforward and independent of other data. Authentication is handled via Firebase Auth, eliminating the need for custom claims or complex `get()` calls in security rules.\n\n**Structural Segregation:** All user-related data is segregated under the `/users/{userId}` collection, ensuring a homogeneous security posture. Status information for servers/projects can also be structured in separate subcollections under users, maintaining clear boundaries.\n\n**QAPs:** Path-based ownership (`/users/{userId}`) enables secure `list` operations for user-specific data. A separate collection for admin roles (if needed) can be created (e.g., `/roles_admin/{uid}`) based on existence checks, supporting secure admin privileges without complex data lookups.\n\nThe design incorporates denormalization where necessary to avoid hierarchical authorization dependencies. For instance, if access to server/project status data depends on user roles or memberships, those roles/memberships should be denormalized into the server/project status documents to enable atomic operations and simplified security rules. This approach ensures that rules are not filters and that `list` operations are secure.\n\nThis structure also promotes data clarity and predictability by adhering to consistent naming conventions and modeling state explicitly (e.g., using a `status` field for server/project status)."
+  }
+}
