@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { Header } from "@/components/header";
 import { ServerCard } from "@/components/server-card";
 import type { Status } from "@/components/status-dot";
 import { SERVER_APPS, MY_PROJECTS } from "@/lib/config";
 import { AIAlerts } from "@/components/ai-alerts";
+import { useUser } from "@/firebase";
 
 const allServices = [...SERVER_APPS, ...MY_PROJECTS];
 const serverNames = allServices.reduce((acc, srv) => {
@@ -13,7 +15,9 @@ const serverNames = allServices.reduce((acc, srv) => {
   return acc;
 }, {} as Record<string, string>);
 
-export default function Home() {
+export default function DashboardPage() {
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
   const [statuses, setStatuses] = useState<Record<string, Status>>(() => {
     const initialStatuses: Record<string, Status> = {};
     allServices.forEach(srv => {
@@ -21,6 +25,12 @@ export default function Home() {
     });
     return initialStatuses;
   });
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.push("/");
+    }
+  }, [user, isUserLoading, router]);
 
   const checkAllStatuses = useCallback(async () => {
     const promises = allServices.map(async (srv) => {
@@ -47,12 +57,22 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    checkAllStatuses();
-    const interval = setInterval(checkAllStatuses, 30000); // 30 seconds
-    return () => clearInterval(interval);
-  }, [checkAllStatuses]);
+    if(user) {
+      checkAllStatuses();
+      const interval = setInterval(checkAllStatuses, 30000); // 30 seconds
+      return () => clearInterval(interval);
+    }
+  }, [checkAllStatuses, user]);
 
   const hasOfflineServer = Object.values(statuses).some(s => s === 'offline');
+  
+  if (isUserLoading || !user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">

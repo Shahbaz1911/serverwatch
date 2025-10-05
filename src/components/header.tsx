@@ -5,14 +5,17 @@ import { useAuth, useUser } from "@/firebase";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Skeleton } from "./ui/skeleton";
+import { useRouter } from "next/navigation";
 
 export function Header() {
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
+  const router = useRouter();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     if (auth) {
-      auth.signOut();
+      await auth.signOut();
+      router.push("/");
     }
   };
 
