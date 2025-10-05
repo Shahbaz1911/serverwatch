@@ -20,6 +20,6 @@ export const SERVER_APPS: MonitoredService[] = [
 export const MY_PROJECTS: MonitoredService[] = [
   { id: 'shop-armanautoxperts', name: 'shop.armanautoxperts.in', url: 'https://shop.armanautoxperts.in', icon: ShoppingCart, color: 'orange' },
   { id: 'gallery-armanautoxperts', name: 'gallery.armanautoxperts.in', url: 'https://gallery.armanautoxperts.in', icon: GalleryHorizontal, color: 'red' },
-  { id: 'personal-portfolio', name: 'Portfolio', url: 'https://example.com', icon: Code, color: 'blue' },
+  { id: 'personal-portfolio', name: 'Portfolio', url: 'https://shahbaz.info/', icon: Code, color: 'blue' },
   { id: 'another-project', name: 'Another Project', url: 'https://example.dev', icon: Globe, color: 'green' },
 ];
