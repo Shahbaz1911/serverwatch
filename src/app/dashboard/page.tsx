@@ -8,6 +8,8 @@ import type { Status } from "@/components/status-dot";
 import { SERVER_APPS, MY_PROJECTS } from "@/lib/config";
 import { AIAlerts } from "@/components/ai-alerts";
 import { useUser } from "@/firebase";
+import { SystemOverview } from "@/components/system-overview";
+import { Separator } from "@/components/ui/separator";
 
 const allServices = [...SERVER_APPS, ...MY_PROJECTS];
 const serverNames = allServices.reduce((acc, srv) => {
@@ -78,6 +80,14 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       <main className="container mx-auto p-4 md:p-8">
+        
+        <section className="mb-8">
+            <h2 className="mb-6 font-headline text-3xl font-bold">System Overview</h2>
+            <SystemOverview />
+        </section>
+
+        <Separator className="my-8" />
+        
         {hasOfflineServer && (
            <div className="mb-8">
              <AIAlerts statuses={statuses} serverNames={serverNames} />
