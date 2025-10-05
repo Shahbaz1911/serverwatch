@@ -71,6 +71,7 @@ export default function LoginPage() {
     try {
         await initiateEmailSignIn(auth, values.email, values.password);
         toast({
+            variant: "success",
             title: "Login Successful",
             description: "Redirecting you to the dashboard...",
         });

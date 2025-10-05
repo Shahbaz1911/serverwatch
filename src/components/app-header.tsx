@@ -7,15 +7,22 @@ import { useRouter } from 'next/navigation';
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { useToast } from '@/hooks/use-toast';
 
 export function AppHeader() {
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleLogout = async () => {
     if (auth) {
       await auth.signOut();
+      toast({
+        variant: "destructive",
+        title: "Logout Successful",
+        description: "You have been logged out.",
+      });
       router.push("/");
     }
   };
