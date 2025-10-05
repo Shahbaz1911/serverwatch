@@ -4,6 +4,7 @@ import React, { useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { gsap } from 'gsap';
 import { ArrowUpRight } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 type CardNavLink = {
   label: string;
@@ -29,6 +30,7 @@ export interface CardNavProps {
   buttonBgColor?: string;
   buttonTextColor?: string;
   cta?: ReactNode;
+  profileAction?: ReactNode;
 }
 
 const CardNav: React.FC<CardNavProps> = ({
@@ -41,7 +43,8 @@ const CardNav: React.FC<CardNavProps> = ({
   menuColor,
   buttonBgColor,
   buttonTextColor,
-  cta
+  cta,
+  profileAction
 }) => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -170,16 +173,25 @@ const CardNav: React.FC<CardNavProps> = ({
 
   return (
     <div
-      className={`card-nav-container absolute left-1/2 -translate-x-1/2 w-[95%] max-w-[900px] z-[99] top-4 md:top-6 ${className}`}
+      className={cn(
+        'card-nav-container absolute left-1/2 -translate-x-1/2 w-[95%] max-w-[900px] z-[99] top-4 md:top-6',
+        className
+      )}
     >
       <nav
         ref={navRef}
-        className={`card-nav ${isExpanded ? 'open' : ''} block h-[60px] p-0 rounded-xl shadow-lg relative overflow-hidden will-change-[height] border border-border`}
+        className={cn(
+          'card-nav block h-[60px] p-0 rounded-xl shadow-lg relative overflow-hidden will-change-[height] border border-border',
+          isExpanded ? 'open' : ''
+        )}
         style={{ backgroundColor: baseColor }}
       >
-        <div className="card-nav-top absolute inset-x-0 top-0 h-[60px] flex items-center justify-between p-2 pl-4 md:pl-2 z-[2]">
+        <div className="card-nav-top absolute inset-x-0 top-0 h-[60px] flex items-center justify-between p-2 md:pl-2 z-[2]">
           <div
-            className={`hamburger-menu ${isHamburgerOpen ? 'open' : ''} group h-full flex flex-col items-center justify-center cursor-pointer gap-[6px] order-2 md:order-none`}
+            className={cn(
+              'hamburger-menu group h-full flex flex-col items-center justify-center cursor-pointer gap-[6px] order-1',
+              isHamburgerOpen ? 'open' : ''
+            )}
             onClick={() => toggleMenu()}
             role="button"
             aria-label={isExpanded ? 'Close menu' : 'Open menu'}
@@ -187,23 +199,30 @@ const CardNav: React.FC<CardNavProps> = ({
             style={{ color: menuColor || 'hsl(var(--foreground))' }}
           >
             <div
-              className={`hamburger-line w-[30px] h-0.5 bg-current transition-[transform,opacity,margin] duration-300 ease-linear [transform-origin:50%_50%] ${
+              className={cn(
+                'hamburger-line w-[30px] h-0.5 bg-current transition-[transform,opacity,margin] duration-300 ease-linear [transform-origin:50%_50%] group-hover:opacity-75',
                 isHamburgerOpen ? 'translate-y-[4px] rotate-45' : ''
-              } group-hover:opacity-75`}
+              )}
             />
             <div
-              className={`hamburger-line w-[30px] h-0.5 bg-current transition-[transform,opacity,margin] duration-300 ease-linear [transform-origin:50%_50%] ${
+              className={cn(
+                'hamburger-line w-[30px] h-0.5 bg-current transition-[transform,opacity,margin] duration-300 ease-linear [transform-origin:50%_50%] group-hover:opacity-75',
                 isHamburgerOpen ? '-translate-y-[4px] -rotate-45' : ''
-              } group-hover:opacity-75`}
+              )}
             />
           </div>
 
-          <div className="logo-container flex items-center md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 order-1 md:order-none">
+          <div className="logo-container flex items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 order-2">
             {logo}
           </div>
-
-          <div className="card-nav-cta-button hidden md:inline-flex border-0 rounded-lg px-2 h-full font-medium cursor-pointer transition-colors duration-300">
-            {cta}
+          
+          <div className="flex items-center gap-2 order-3">
+            <div className="card-nav-profile-action md:hidden">
+                {profileAction}
+            </div>
+            <div className="card-nav-cta-button hidden md:inline-flex border-0 rounded-lg px-2 h-full font-medium cursor-pointer transition-colors duration-300">
+              {cta}
+            </div>
           </div>
         </div>
 
@@ -216,11 +235,11 @@ const CardNav: React.FC<CardNavProps> = ({
           {(items || []).slice(0, 3).map((item, idx) => (
             <div
               key={`${item.label}-${idx}`}
-              className="nav-card select-none relative flex flex-col gap-2 p-3 md:p-4 rounded-lg min-w-0 flex-1 h-auto min-h-[60px] md:h-full md:min-h-0 border border-primary/50"
+              className="nav-card select-none relative flex flex-col gap-2 p-3 md:p-4 rounded-lg min-w-0 flex-1 h-auto min-h-[60px] md:h-full md:min-h-0 border border-primary/20"
               ref={setCardRef(idx)}
               style={{
-                backgroundColor: item.bgColor,
-                color: item.textColor
+                background: item.bgColor,
+                color: item.textColor,
               }}
             >
               <div className="nav-card-label font-headline tracking-tight text-lg md:text-xl">
@@ -241,6 +260,9 @@ const CardNav: React.FC<CardNavProps> = ({
               </div>
             </div>
           ))}
+            <div className="md:hidden p-2">
+                {cta}
+            </div>
         </div>
       </nav>
     </div>

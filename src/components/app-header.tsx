@@ -1,10 +1,12 @@
 "use client";
 import React from 'react';
 import { CardNav } from '@/components/ui/card-nav';
-import { Server, LogOut, Briefcase, Info, Mail } from 'lucide-react';
+import { Server, LogOut, User as UserIcon } from 'lucide-react';
 import { useAuth, useUser } from "@/firebase";
 import { useRouter } from 'next/navigation';
 import { Button } from './ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 
 export function AppHeader() {
   const { user, isUserLoading } = useUser();
@@ -21,7 +23,7 @@ export function AppHeader() {
   const navItems = [
     {
       label: "About",
-      bgColor: "hsl(var(--background))",
+      bgColor: "hsl(var(--card))",
       textColor: "hsl(var(--foreground))",
       links: [
         { label: "Company", href: "#", ariaLabel: "About Company" },
@@ -30,7 +32,7 @@ export function AppHeader() {
     },
     {
       label: "Projects", 
-      bgColor: "hsl(var(--background))",
+      bgColor: "hsl(var(--card))",
       textColor: "hsl(var(--foreground))",
       links: [
         { label: "Featured", href: "#", ariaLabel: "Featured Projects" },
@@ -39,7 +41,7 @@ export function AppHeader() {
     },
     {
       label: "Contact",
-      bgColor: "hsl(var(--background))", 
+      bgColor: "hsl(var(--card))",
       textColor: "hsl(var(--foreground))",
       links: [
         { label: "Email", href: "#", ariaLabel: "Email us" },
@@ -49,6 +51,13 @@ export function AppHeader() {
     }
   ];
 
+  const ctaContent = isUserLoading ? null : user ? (
+    <Button variant="ghost" onClick={handleLogout} className="w-full h-full rounded-lg md:w-auto">
+      <LogOut className="mr-2 h-4 w-4" />
+      Logout
+    </Button>
+  ) : null;
+
   return (
       <CardNav
         items={navItems}
@@ -56,15 +65,33 @@ export function AppHeader() {
         menuColor="hsl(var(--foreground))"
         buttonBgColor="hsl(var(--primary))"
         buttonTextColor="hsl(var(--primary-foreground))"
-        logo={<Server className="h-7 w-7 text-primary" />}
+        logo={
+            <div className="flex items-center gap-2">
+                <Server className="h-7 w-7 text-primary" />
+                <span className="font-headline text-xl font-bold">ServerWatch</span>
+            </div>
+        }
         logoAlt="ServerWatch Logo"
-        cta={
-          isUserLoading ? null : user ? (
-            <Button variant="ghost" onClick={handleLogout} className="h-full rounded-lg">
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </Button>
-          ) : null
+        cta={ctaContent}
+        profileAction={
+            !isUserLoading && user && (
+                 <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Avatar className="h-8 w-8 cursor-pointer">
+                            <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
+                            <AvatarFallback>
+                                <UserIcon className="h-4 w-4" />
+                            </AvatarFallback>
+                        </Avatar>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={handleLogout}>
+                            <LogOut className="mr-2 h-4 w-4" />
+                            <span>Logout</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            )
         }
     />
   );
