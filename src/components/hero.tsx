@@ -1,26 +1,11 @@
-import Image from "next/image";
 import { Button } from "./ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 export function Hero() {
-  const heroImage = PlaceHolderImages.find(p => p.id === 'hero-dashboard');
-
   return (
-    <section className="relative mb-12 h-[480px] w-full animate-fade-in-up rounded-lg overflow-hidden">
-      {heroImage && (
-        <Image
-          src={heroImage.imageUrl}
-          alt={heroImage.description}
-          fill
-          className="object-cover"
-          priority
-          data-ai-hint={heroImage.imageHint}
-        />
-      )}
-      <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-background/20 to-transparent" />
-      <div className="relative z-10 flex h-full flex-col items-center justify-end p-8 text-center text-foreground">
+    <section className="relative mb-12 h-auto w-full animate-fade-in-up rounded-lg overflow-hidden bg-gradient-to-br from-primary/10 via-transparent to-accent/10 py-20 md:py-24">
+      <div className="relative z-10 flex h-full flex-col items-center justify-center p-8 text-center text-foreground">
         <div className="max-w-4xl">
             <h1 className="font-headline text-5xl font-bold md:text-6xl drop-shadow-lg">
             Your Entire Digital Ecosystem, Unified.
