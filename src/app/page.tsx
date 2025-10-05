@@ -24,7 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth, useUser } from "@/firebase";
-import { initiateEmailSignIn } from "@/firebase/non-blocking-login";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { Server, Mail, KeyRound } from "lucide-react";
 import LiquidEther from '@/components/liquid-ether';
@@ -69,12 +69,13 @@ export default function LoginPage() {
     }
 
     try {
-        await initiateEmailSignIn(auth, values.email, values.password);
+        await signInWithEmailAndPassword(auth, values.email, values.password);
         toast({
             variant: "success",
             title: "Login Successful",
             description: "Redirecting you to the dashboard...",
         });
+        // The useEffect will handle the redirect
     } catch (error) {
         let errorMessage = "An unknown error occurred.";
         if (error instanceof FirebaseError) {

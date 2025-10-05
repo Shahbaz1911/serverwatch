@@ -24,6 +24,10 @@ export function initiateEmailSignUp(authInstance: Auth, email: string, password:
 /** Initiate email/password sign-in (non-blocking). */
 export function initiateEmailSignIn(authInstance: Auth, email: string, password: string): void {
   // CRITICAL: Call signInWithEmailAndPassword directly. Do NOT use 'await signInWithEmailAndPassword(...)'.
-  signInWithEmailAndPassword(authInstance, email, password);
+  signInWithEmailAndPassword(authInstance, email, password).catch((error) => {
+    // We catch and log the error here to prevent unhandled promise rejections,
+    // but the primary error handling is now in the component that calls this.
+    console.error("Sign-in attempt failed:", error.code);
+  });
   // Code continues immediately. Auth state change is handled by onAuthStateChanged listener.
 }
