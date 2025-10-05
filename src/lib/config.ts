@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Server, Cloud, LineChart, Zap, Globe, ShoppingCart, GalleryHorizontal, Code } from 'lucide-react';
+import { Server, Cloud, LineChart, Zap, Globe, ShoppingCart, GalleryHorizontal, Code, KanbanSquare } from 'lucide-react';
 
 export interface MonitoredService {
   id: string;
@@ -14,6 +14,7 @@ export const SERVER_APPS: MonitoredService[] = [
   { id: 'netdata', name: 'Netdata', url: 'http://localhost:19999', icon: LineChart, color: 'green' },
   { id: 'n8n', name: 'n8n', url: 'http://localhost:5678', icon: Zap, color: 'purple' },
   { id: 'nextcloud', name: 'Nextcloud', url: 'http://localhost:8080', icon: Cloud, color: 'indigo' },
+  { id: 'cockpit', name: 'Cockpit', url: 'http://localhost:9090', icon: KanbanSquare, color: 'red' },
 ];
 
 export const MY_PROJECTS: MonitoredService[] = [
