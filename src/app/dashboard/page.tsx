@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Header } from "@/components/header";
 import { ServerCard } from "@/components/server-card";
 import type { Status } from "@/components/status-dot";
 import { SERVER_APPS, MY_PROJECTS } from "@/lib/config";
@@ -72,8 +71,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Header />
-      <main className="container mx-auto p-4 md:p-8">
+      <main className="container mx-auto p-4 md:p-8 pt-24 md:pt-32">
         
         <Hero />
 
