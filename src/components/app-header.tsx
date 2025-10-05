@@ -8,6 +8,7 @@ import { Button } from './ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
+import { SERVER_APPS, MY_PROJECTS } from '@/lib/config';
 
 export function AppHeader() {
   const { user, isUserLoading } = useUser();
@@ -29,33 +30,25 @@ export function AppHeader() {
 
   const navItems = [
     {
-      label: "About",
+      label: "Server Applications",
       bgColor: "hsl(var(--background))",
       textColor: "hsl(var(--foreground))",
-      links: [
-        { label: "Company", href: "#", ariaLabel: "About Company" },
-        { label: "Careers", href: "#", ariaLabel: "About Careers" }
-      ]
+      links: SERVER_APPS.map(app => ({
+        label: app.name,
+        href: app.url,
+        ariaLabel: `Open ${app.name}`
+      }))
     },
     {
       label: "Projects", 
       bgColor: "hsl(var(--background))",
       textColor: "hsl(var(--foreground))",
-      links: [
-        { label: "Featured", href: "#", ariaLabel: "Featured Projects" },
-        { label: "Case Studies", href: "#", ariaLabel: "Project Case Studies" }
-      ]
+      links: MY_PROJECTS.map(project => ({
+        label: project.name,
+        href: project.url,
+        ariaLabel: `Open ${project.name}`
+      }))
     },
-    {
-      label: "Contact",
-      bgColor: "hsl(var(--background))",
-      textColor: "hsl(var(--foreground))",
-      links: [
-        { label: "Email", href: "#", ariaLabel: "Email us" },
-        { label: "Twitter", href: "#", ariaLabel: "Twitter" },
-        { label: "LinkedIn", href: "#", ariaLabel: "LinkedIn" }
-      ]
-    }
   ];
 
   return (
