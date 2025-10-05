@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Status } from "./status-dot";
 import { StatusDot } from "./status-dot";
+import { GlassIcon } from "./glass-icon";
 
 type ServerCardProps = {
   name: string;
@@ -9,9 +10,10 @@ type ServerCardProps = {
   icon: LucideIcon;
   status: Status;
   animationDelay: number;
+  color?: string;
 };
 
-export function ServerCard({ name, url, icon: Icon, status, animationDelay }: ServerCardProps) {
+export function ServerCard({ name, url, icon: Icon, status, animationDelay, color = 'blue' }: ServerCardProps) {
   return (
     <div
       className="animate-fade-in-up opacity-0"
@@ -23,10 +25,7 @@ export function ServerCard({ name, url, icon: Icon, status, animationDelay }: Se
             <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <div className="relative">
-                          <Icon className="h-8 w-8 text-accent" />
-                          <div className="absolute -inset-2 rounded-full bg-accent/20 blur-lg" />
-                        </div>
+                        <GlassIcon icon={<Icon className="w-[1.5em] h-[1.5em]" />} color={color} label={name} />
                         <CardTitle className="font-headline text-lg">{name}</CardTitle>
                     </div>
                 </div>

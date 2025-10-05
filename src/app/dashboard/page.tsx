@@ -93,6 +93,7 @@ export default function DashboardPage() {
                 icon={app.icon}
                 status={statuses[app.id] || 'loading'}
                 animationDelay={index * 0.05}
+                color={app.color}
               />
             ))}
           </div>
@@ -109,6 +110,7 @@ export default function DashboardPage() {
                 icon={project.icon}
                 status={statuses[project.id] || 'loading'}
                 animationDelay={(SERVER_APPS.length + index) * 0.05}
+                color={project.color}
               />
             ))}
           </div>
