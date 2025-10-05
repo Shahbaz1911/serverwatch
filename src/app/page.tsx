@@ -27,6 +27,7 @@ import { useAuth, useUser } from "@/firebase";
 import { initiateEmailSignIn } from "@/firebase/non-blocking-login";
 import { FirebaseError } from "firebase/app";
 import { LogIn, Mail, KeyRound } from "lucide-react";
+import LiquidEther from '@/components/liquid-ether';
 
 const formSchema = z.object({
   email: z.string().email({
@@ -107,8 +108,27 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md animate-fade-in-up">
+    <div className="relative flex min-h-screen items-center justify-center bg-background p-4">
+       <div className="absolute inset-0 z-0">
+        <LiquidEther
+          colors={[ '#5227FF', '#FF9FFC', '#B19EEF' ]}
+          mouseForce={20}
+          cursorSize={100}
+          isViscous={false}
+          viscous={30}
+          iterationsViscous={32}
+          iterationsPoisson={32}
+          resolution={0.5}
+          isBounce={false}
+          autoDemo={true}
+          autoSpeed={0.5}
+          autoIntensity={2.2}
+          takeoverDuration={0.25}
+          autoResumeDelay={3000}
+          autoRampDuration={0.6}
+        />
+      </div>
+      <Card className="w-full max-w-md animate-fade-in-up z-10 bg-background/80 backdrop-blur-sm">
         <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
                 <LogIn className="h-10 w-10 text-primary" />
