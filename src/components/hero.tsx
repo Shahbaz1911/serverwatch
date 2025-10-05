@@ -25,9 +25,7 @@ export function Hero() {
             <h1 className="font-headline text-5xl font-bold md:text-6xl drop-shadow-lg">
             Your Entire Digital Ecosystem, Unified.
             </h1>
-            <p className="mt-4 max-w-2xl mx-auto text-lg text-foreground/80 drop-shadow-sm">
-            Monitor, manage, and analyze all your servers and projects from a single, intuitive dashboard. Welcome to mission control.
-            </p>
+            
             <Button asChild size="lg" className="mt-8">
             <Link href="#system-overview">
                 Check System Health <ArrowRight className="ml-2" />
