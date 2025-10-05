@@ -218,7 +218,10 @@ const CardNav: React.FC<CardNavProps> = ({
               key={`${item.label}-${idx}`}
               className="nav-card select-none relative flex flex-col gap-2 p-3 md:p-4 rounded-lg min-w-0 flex-1 h-auto min-h-[60px] md:h-full md:min-h-0 border border-primary/50"
               ref={setCardRef(idx)}
-              style={{ backgroundColor: item.bgColor, color: item.textColor }}
+              style={{
+                background: `linear-gradient(145deg, ${item.bgColor}, hsl(var(--card)))`,
+                color: item.textColor
+              }}
             >
               <div className="nav-card-label font-headline tracking-tight text-lg md:text-xl">
                 {item.label}
