@@ -58,13 +58,6 @@ export function AppHeader() {
     }
   ];
 
-  const ctaContent = isUserLoading ? null : user ? (
-    <Button variant="ghost" onClick={handleLogout} className="w-full h-full rounded-lg md:w-auto">
-      <LogOut className="mr-2 h-4 w-4" />
-      Logout
-    </Button>
-  ) : null;
-
   return (
       <CardNav
         items={navItems}
@@ -79,7 +72,6 @@ export function AppHeader() {
             </div>
         }
         logoAlt="ServerWatch Logo"
-        cta={ctaContent}
         profileAction={
             !isUserLoading && user && (
                  <DropdownMenu>
@@ -92,7 +84,7 @@ export function AppHeader() {
                         </Avatar>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={handleLogout} className="md:hidden">
+                        <DropdownMenuItem onClick={handleLogout}>
                             <LogOut className="mr-2 h-4 w-4" />
                             <span>Logout</span>
                         </DropdownMenuItem>
