@@ -9,6 +9,7 @@ import { SERVER_APPS, MY_PROJECTS } from "@/lib/config";
 import { useUser } from "@/firebase";
 import { SystemOverview } from "@/components/system-overview";
 import { Separator } from "@/components/ui/separator";
+import { Hero } from "@/components/hero";
 
 const allServices = [...SERVER_APPS, ...MY_PROJECTS];
 
@@ -74,7 +75,9 @@ export default function DashboardPage() {
       <Header />
       <main className="container mx-auto p-4 md:p-8">
         
-        <section className="mb-8">
+        <Hero />
+
+        <section className="my-8">
             <h2 className="mb-6 font-headline text-3xl font-bold">System Overview</h2>
             <SystemOverview />
         </section>

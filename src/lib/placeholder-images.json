@@ -1,3 +1,10 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-dashboard",
+      "description": "A futuristic command center with holographic displays showing data and charts.",
+      "imageUrl": "https://images.unsplash.com/photo-1617831094076-f85e7d025b11?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb21tYW5kJTIwY2VudGVyfGVufDB8fHx8MTc1OTY2OTM2OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "command center"
+    }
+  ]
 }
