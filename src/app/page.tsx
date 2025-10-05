@@ -1,101 +1,163 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { Header } from "@/components/header";
-import { ServerCard } from "@/components/server-card";
-import type { Status } from "@/components/status-dot";
-import { SERVER_APPS, MY_PROJECTS } from "@/lib/config";
-import { AIAlerts } from "@/components/ai-alerts";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth, useUser } from "@/firebase";
+import { initiateEmailSignIn } from "@/firebase/non-blocking-login";
+import { FirebaseError } from "firebase/app";
+import { LogIn, Mail, KeyRound } from "lucide-react";
 
-const allServices = [...SERVER_APPS, ...MY_PROJECTS];
-const serverNames = allServices.reduce((acc, srv) => {
-  acc[srv.id] = srv.name;
-  return acc;
-}, {} as Record<string, string>);
+const formSchema = z.object({
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  password: z.string().min(6, {
+    message: "Password must be at least 6 characters.",
+  }),
+});
 
-export default function Home() {
-  const [statuses, setStatuses] = useState<Record<string, Status>>(() => {
-    const initialStatuses: Record<string, Status> = {};
-    allServices.forEach(srv => {
-      initialStatuses[srv.id] = 'loading';
-    });
-    return initialStatuses;
+export default function LoginPage() {
+  const { user, isUserLoading } = useUser();
+  const auth = useAuth();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
-  const checkAllStatuses = useCallback(async () => {
-    const promises = allServices.map(async (srv) => {
-      try {
-        const res = await fetch(`/api/status?url=${encodeURIComponent(srv.url)}`);
-        if (!res.ok) {
-          return { id: srv.id, status: 'offline' as Status };
-        }
-        const data = await res.json();
-        return { id: srv.id, status: data.status as Status };
-      } catch (error) {
-        return { id: srv.id, status: 'offline' as Status };
-      }
-    });
-
-    const results = await Promise.all(promises);
-    setStatuses(prev => {
-        const newStatuses = {...prev};
-        results.forEach(res => {
-            newStatuses[res.id] = res.status;
-        });
-        return newStatuses;
-    });
-  }, []);
-
   useEffect(() => {
-    checkAllStatuses();
-    const interval = setInterval(checkAllStatuses, 30000); // 30 seconds
-    return () => clearInterval(interval);
-  }, [checkAllStatuses]);
+    if (!isUserLoading && user) {
+      router.push("/dashboard");
+    }
+  }, [user, isUserLoading, router]);
 
-  const hasOfflineServer = Object.values(statuses).some(s => s === 'offline');
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!auth) {
+        toast({
+            variant: "destructive",
+            title: "Authentication service not available.",
+            description: "Please try again later.",
+        });
+        return;
+    }
+
+    try {
+        await initiateEmailSignIn(auth, values.email, values.password);
+        toast({
+            title: "Login Successful",
+            description: "Redirecting you to the dashboard...",
+        });
+    } catch (error) {
+        let errorMessage = "An unknown error occurred.";
+        if (error instanceof FirebaseError) {
+            switch (error.code) {
+                case 'auth/user-not-found':
+                case 'auth/wrong-password':
+                case 'auth/invalid-credential':
+                    errorMessage = "Invalid email or password.";
+                    break;
+                case 'auth/invalid-email':
+                    errorMessage = "Please enter a valid email address.";
+                    break;
+                default:
+                    errorMessage = "Failed to log in. Please try again.";
+                    break;
+            }
+        }
+        toast({
+            variant: "destructive",
+            title: "Login Failed",
+            description: errorMessage,
+        });
+    }
+  }
+  
+  if (isUserLoading || user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Header />
-      <main className="container mx-auto p-4 md:p-8">
-        {hasOfflineServer && (
-           <div className="mb-8">
-             <AIAlerts statuses={statuses} serverNames={serverNames} />
-           </div>
-        )}
-
-        <section className="mb-12">
-          <h2 className="mb-6 font-headline text-3xl font-bold">Server Apps</h2>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {SERVER_APPS.map((app, index) => (
-              <ServerCard
-                key={app.id}
-                name={app.name}
-                url={app.url}
-                icon={app.icon}
-                status={statuses[app.id] || 'loading'}
-                animationDelay={index * 0.05}
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md animate-fade-in-up">
+        <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+                <LogIn className="h-10 w-10 text-primary" />
+            </div>
+          <CardTitle className="font-headline text-2xl">Welcome Back</CardTitle>
+          <CardDescription>Sign in to your ServerWatch account</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input placeholder="name@example.com" {...field} className="pl-10" />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            ))}
-          </div>
-        </section>
-
-        <section>
-          <h2 className="mb-6 font-headline text-3xl font-bold">My Projects</h2>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {MY_PROJECTS.map((project, index) => (
-              <ServerCard
-                key={project.id}
-                name={project.name}
-                url={project.url}
-                icon={project.icon}
-                status={statuses[project.id] || 'loading'}
-                animationDelay={(SERVER_APPS.length + index) * 0.05}
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input type="password" placeholder="••••••••" {...field} className="pl-10" />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            ))}
-          </div>
-        </section>
-      </main>
+              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? "Signing In..." : "Sign In"}
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
     </div>
   );
 }
