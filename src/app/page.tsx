@@ -26,7 +26,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth, useUser } from "@/firebase";
 import { initiateEmailSignIn } from "@/firebase/non-blocking-login";
 import { FirebaseError } from "firebase/app";
-import { LogIn, Mail, KeyRound } from "lucide-react";
+import { Server, Mail, KeyRound } from "lucide-react";
 import LiquidEther from '@/components/liquid-ether';
 
 const formSchema = z.object({
@@ -130,8 +130,9 @@ export default function LoginPage() {
       </div>
       <Card className="w-full max-w-md animate-fade-in-up z-10 bg-background/80 backdrop-blur-sm">
         <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-                <LogIn className="h-10 w-10 text-primary" />
+            <div className="flex items-center justify-center gap-2 mb-4">
+                <Server className="h-8 w-8 text-primary" />
+                <span className="font-headline text-2xl font-bold">ServerWatch</span>
             </div>
           <CardTitle className="font-headline text-2xl">Welcome Back</CardTitle>
           <CardDescription>Sign in to your ServerWatch account</CardDescription>
