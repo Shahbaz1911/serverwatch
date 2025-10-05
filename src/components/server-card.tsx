@@ -23,7 +23,10 @@ export function ServerCard({ name, url, icon: Icon, status, animationDelay }: Se
             <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Icon className="h-8 w-8 text-accent" />
+                        <div className="relative">
+                          <Icon className="h-8 w-8 text-accent" />
+                          <div className="absolute -inset-2 rounded-full bg-accent/20 blur-lg" />
+                        </div>
                         <CardTitle className="font-headline text-lg">{name}</CardTitle>
                     </div>
                 </div>
