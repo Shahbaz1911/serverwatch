@@ -13,6 +13,7 @@ export default {
         body: ['Inter', 'sans-serif'],
         headline: ['"Space Grotesk"', 'sans-serif'],
         code: ['monospace'],
+        'press-start': ['"Press Start 2P"', 'cursive'],
       },
       colors: {
         background: 'hsl(var(--background))',

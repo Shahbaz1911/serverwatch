@@ -29,7 +29,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth, useUser } from "@/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
-import { Server, Mail, KeyRound, Eye, EyeOff } from "lucide-react";
+import { Mail, KeyRound, Eye, EyeOff } from "lucide-react";
 import LiquidEther from '@/components/liquid-ether';
 import Link from "next/link";
 
@@ -176,8 +176,7 @@ export default function LoginPage() {
                     <Card className="w-full bg-background/80 backdrop-blur-sm">
                         <CardHeader className="text-center">
                             <div className="flex items-center justify-center gap-2 mb-4">
-                                <Server className="h-8 w-8 text-primary" />
-                                <span className="font-headline text-2xl font-bold">ServerWatch</span>
+                                <span className="font-press-start text-2xl font-bold">ServerWatch</span>
                             </div>
                         <CardTitle className="font-headline text-2xl">Welcome Back</CardTitle>
                         <CardDescription>Sign in to your ServerWatch account</CardDescription>
