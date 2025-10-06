@@ -27,7 +27,7 @@ export function RemoteControl({ onPrev, onNext, onOk }: RemoteControlProps) {
           aria-label="Select Item"
           className="group z-10 h-16 w-16 rounded-full border-2 border-border bg-background shadow-inner"
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-background/80 shadow-md transition-colors group-hover:bg-accent">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-background/80 shadow-md transition-colors group-hover:bg-muted">
             {/* OK text removed */}
           </div>
         </Button>
