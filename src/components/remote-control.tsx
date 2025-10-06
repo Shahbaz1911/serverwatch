@@ -13,11 +13,10 @@ export function RemoteControl({ onPrev, onNext, onOk }: RemoteControlProps) {
       <div className="relative flex h-36 w-36 items-center justify-center rounded-full bg-transparent">
         {/* Left Button */}
         <Button
-          variant="ghost"
           size="icon"
           onClick={onPrev}
           aria-label="Previous Item"
-          className="absolute left-0 h-full w-16 rounded-l-full text-muted-foreground duration-150 flex items-center justify-center"
+          className="absolute left-0 h-full w-16 rounded-l-full text-muted-foreground duration-150 flex items-center justify-center bg-transparent hover:bg-transparent"
         >
           <ChevronsLeft className="h-6 w-6" />
         </Button>
@@ -35,11 +34,10 @@ export function RemoteControl({ onPrev, onNext, onOk }: RemoteControlProps) {
 
         {/* Right Button */}
         <Button
-          variant="ghost"
           size="icon"
           onClick={onNext}
           aria-label="Next Item"
-          className="absolute right-0 h-full w-16 rounded-r-full text-muted-foreground duration-150 flex items-center justify-center"
+          className="absolute right-0 h-full w-16 rounded-r-full text-muted-foreground duration-150 flex items-center justify-center bg-transparent hover:bg-transparent"
         >
           <ChevronsRight className="h-6 w-6" />
         </Button>
