@@ -31,7 +31,6 @@ export function RemoteControl({ onPrev, onNext, onOk, variant = 'circle' }: Remo
         }}
         transition={{ type: 'spring', stiffness: 260, damping: 30 }}
       >
-        {!isCapsule && <span className="absolute top-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">Menu</span>}
         
         {/* Left Button */}
         <motion.div
