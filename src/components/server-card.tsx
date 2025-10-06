@@ -29,13 +29,19 @@ export const ServerCard = React.forwardRef<HTMLDivElement, ServerCardProps>(
        <CardContent className="p-0 flex flex-col items-center gap-4">
         {isLoading ? (
           <>
-            <Skeleton className="h-[3em] w-[3em] rounded-[1.25em]" />
+            <Skeleton className="h-16 w-16 rounded-[1.25em]" />
             <Skeleton className="h-6 w-32" />
           </>
         ) : (
           <>
              <motion.div layoutId={`card-container-${id}`} onClick={() => router.push(`/dashboard/app/${id}`)} className="cursor-pointer">
-                 <GlassIcon icon={<Icon className="w-[1.5em] h-[1.5em]" />} color={color} label={name} isSelected={isSelected || isHovered} />
+                 <GlassIcon 
+                    icon={<Icon className="w-full h-full" />} 
+                    color={color} 
+                    label={name} 
+                    isSelected={isSelected || isHovered}
+                    customClass="w-16 h-16"
+                 />
              </motion.div>
           </>
         )}
