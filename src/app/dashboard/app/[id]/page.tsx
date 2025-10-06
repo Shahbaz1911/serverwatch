@@ -120,7 +120,7 @@ export default function AppPage() {
 
 
   return (
-    <div className="container mx-auto p-4 md:p-8 pt-12 md:pt-16 min-h-screen flex flex-col items-center">
+    <div className="container mx-auto p-4 md:p-8 pt-12 md:pt-16 min-h-screen flex flex-col items-center pb-32">
        <motion.div
         layoutId={`card-container-${id}`}
         animate={'capsule'}
