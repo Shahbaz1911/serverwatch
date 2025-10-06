@@ -25,24 +25,24 @@ export const ServerCard = React.forwardRef<HTMLDivElement, ServerCardProps>(
     const router = useRouter();
 
     const cardContent = (
-       <CardContent className="p-0 flex flex-col items-center gap-4">
+       <CardContent className="p-0 flex flex-col items-center justify-center gap-4">
         {isLoading ? (
           <>
             <Skeleton className="h-24 w-24 rounded-[1.25em]" />
             <Skeleton className="h-6 w-32" />
           </>
         ) : (
-          <div className="relative">
+          <div className="relative pt-6">
             <AnimatePresence>
                 {isSelected && (
                     <motion.span
-                        initial={{ opacity: 0, y: -20 }}
+                        initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
+                        exit={{ opacity: 0, y: 10 }}
                         transition={{ duration: 0.3 }}
-                        className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-medium text-muted-foreground"
+                        className="absolute top-0 left-1/2 -translate-x-1/2 text-sm font-medium text-foreground whitespace-nowrap"
                     >
-                        Selected
+                        {name}
                     </motion.span>
                 )}
             </AnimatePresence>
