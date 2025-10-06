@@ -194,8 +194,8 @@ export default function AppPage() {
           onOk={() => {
             router.push('/dashboard');
           }}
-          onNext={handleNext}
-          onPrev={handlePrev}
+          onNext={() => router.push('/dashboard')}
+          onPrev={() => router.push('/dashboard')}
        />
     </div>
   );
