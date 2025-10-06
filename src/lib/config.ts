@@ -23,5 +23,5 @@ export const MY_PROJECTS: MonitoredService[] = [
   { id: 'project-1', name: 'evntos', url: 'https://evntoswebapp.vercel.app/', icon: ShoppingCart, color: 'orange', port: 443, uptime: '100%'},
   { id: 'project-2', name: 'Project 2', url: 'https://example.org', icon: GalleryHorizontal, color: 'red', port: 443, uptime: '100%' },
   { id: 'personal-portfolio', name: 'Portfolio', url: 'https://shahbaz.info/', icon: Code, color: 'blue', port: 443, uptime: '100%' },
-  { id: 'another-project', name: 'Another Project', url: 'https://example.dev', icon: Globe, color: 'green', port: 443, uptime: '100%' },
+  { id: 'another-project', name: 'Project 2', url: 'https://armanautoxperts.vercel.app/', icon: Globe, color: 'green', port: 443, uptime: '100%' },
 ];
