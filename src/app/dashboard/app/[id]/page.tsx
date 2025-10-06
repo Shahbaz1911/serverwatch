@@ -59,6 +59,13 @@ export default function AppPage() {
   const handleGoBack = () => {
     setIsNavigatingBack(true);
   };
+  
+  const handleToggleService = (isChecked: boolean) => {
+    setIsServiceActive(isChecked);
+    if (isChecked && service) {
+      window.open(service.url, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   if (!service) {
     return (
@@ -183,7 +190,7 @@ export default function AppPage() {
                         </div>
                         <Switch
                             checked={isServiceActive}
-                            onCheckedChange={setIsServiceActive}
+                            onCheckedChange={handleToggleService}
                             aria-label="Toggle service status"
                         />
                     </motion.div>
