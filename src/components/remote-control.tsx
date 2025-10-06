@@ -1,7 +1,8 @@
+import { useEffect, useRef } from 'react';
 import { ChevronsLeft, ChevronsRight, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { gsap } from 'gsap';
 
 interface RemoteControlProps {
   onPrev: () => void;
@@ -12,31 +13,41 @@ interface RemoteControlProps {
 
 export function RemoteControl({ onPrev, onNext, onOk, variant = 'circle' }: RemoteControlProps) {
   const isCapsule = variant === 'capsule';
+  const shapeRef = useRef<HTMLDivElement>(null);
+  const okButtonRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (shapeRef.current && okButtonRef.current) {
+        gsap.to(shapeRef.current, {
+            borderRadius: isCapsule ? '9999px' : '9999px',
+            width: isCapsule ? '14rem' : '11rem',
+            height: isCapsule ? '6rem' : '11rem',
+            duration: 0.5,
+            ease: 'power3.inOut'
+        });
+
+        gsap.to(okButtonRef.current, {
+          rotate: isCapsule ? 0 : 0,
+          opacity: 1,
+          duration: 0.2,
+        })
+    }
+  }, [isCapsule]);
+
 
   return (
-    <motion.div 
-      layoutId="remote-control-container"
+    <div 
       className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center"
     >
-      <motion.div
-        layoutId="remote-control-shape"
+      <div
+        ref={shapeRef}
         className={cn(
             "relative flex items-center justify-center border-2 border-border transition-all duration-300",
         )}
-        initial={{ borderRadius: '9999px', width: '11rem', height: '11rem' }}
-        animate={{
-            borderRadius: isCapsule ? '9999px' : '9999px',
-            width: isCapsule ? '14rem' : '11rem',
-            height: isCapsule ? '6rem' : '11rem'
-        }}
-        transition={{ type: 'spring', stiffness: 260, damping: 30 }}
       >
         
         {/* Left Button */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+        <div
           className={cn(
             "absolute h-full flex items-center justify-center",
             isCapsule ? "left-2 w-16" : "left-0 w-16"
@@ -50,34 +61,26 @@ export function RemoteControl({ onPrev, onNext, onOk, variant = 'circle' }: Remo
           >
             <ChevronsLeft className="h-8 w-8" />
           </Button>
-        </motion.div>
+        </div>
 
 
         {/* OK / X Button */}
-        <motion.div
-          layoutId="remote-ok-button"
+        <div
+          ref={okButtonRef}
           onClick={onOk}
           aria-label={isCapsule ? "Go back" : "Select Item"}
           className="group z-10 h-16 w-16 rounded-full flex items-center justify-center cursor-pointer transition-colors"
         >
            <div className="h-full w-full rounded-full border-2 border-border bg-background shadow-inner flex items-center justify-center cursor-pointer transition-colors group-hover:bg-muted">
-             <motion.div
-                key={isCapsule ? 'x' : 'ok'}
-                initial={{ rotate: -90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 90, opacity: 0 }}
-                transition={{ duration: 0.2 }}
+             <div
              >
                 {isCapsule && <X className="h-8 w-8" />}
-             </motion.div>
+             </div>
            </div>
-        </motion.div>
+        </div>
 
         {/* Right Button */}
-         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+         <div
           className={cn(
             "absolute h-full flex items-center justify-center",
             isCapsule ? "right-2 w-16" : "right-0 w-16"
@@ -91,8 +94,8 @@ export function RemoteControl({ onPrev, onNext, onOk, variant = 'circle' }: Remo
             >
             <ChevronsRight className="h-8 w-8" />
             </Button>
-        </motion.div>
-      </motion.div>
-    </motion.div>
+        </div>
+      </div>
+    </div>
   );
 }
