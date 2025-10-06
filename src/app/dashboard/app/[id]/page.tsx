@@ -39,7 +39,7 @@ export default function AppPage() {
         setIsDetailsVisible(true);
       }
        if (e.key === 'Escape') {
-        router.back();
+        router.push('/dashboard');
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -181,7 +181,7 @@ export default function AppPage() {
           variant={isDetailsVisible ? 'capsule' : 'circle'}
           onOk={() => {
             if (isDetailsVisible) {
-                router.back();
+                router.push('/dashboard');
             } else {
                 setIsDetailsVisible(true);
             }
