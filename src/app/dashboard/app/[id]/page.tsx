@@ -147,7 +147,6 @@ export default function AppPage() {
             >
                 <motion.div variants={itemVariants}>
                     <h1 className="font-headline text-4xl md:text-5xl font-bold">{service.name}</h1>
-                    <p className="text-muted-foreground mt-2">Detailed information for {service.name}.</p>
                 </motion.div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
