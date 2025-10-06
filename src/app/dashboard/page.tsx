@@ -156,7 +156,8 @@ export default function DashboardPage() {
         </LayoutGroup>
 
       </main>
-      <RemoteControl 
+      <RemoteControl
+        variant="circle" 
         onNext={handleSelectNext}
         onPrev={handleSelectPrev}
         onOk={handleConfirm}

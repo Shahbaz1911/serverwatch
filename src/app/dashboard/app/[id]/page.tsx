@@ -18,7 +18,10 @@ export default function AppPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
-  const service = allServices.find(s => s.id === id);
+  
+  const currentIndex = allServices.findIndex(s => s.id === id);
+  const service = allServices[currentIndex];
+
   const [status, setStatus] = useState<Status>('loading');
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
 
@@ -58,6 +61,17 @@ export default function AppPage() {
   const handleOpenLink = () => {
     window.open(service.url, '_blank', 'noopener,noreferrer');
   };
+  
+  const handleNext = () => {
+    const nextIndex = (currentIndex + 1) % allServices.length;
+    router.push(`/dashboard/app/${allServices[nextIndex].id}`);
+  };
+
+  const handlePrev = () => {
+    const prevIndex = (currentIndex - 1 + allServices.length) % allServices.length;
+    router.push(`/dashboard/app/${allServices[prevIndex].id}`);
+  };
+
 
   const variants = {
     initial: { scale: 1.5, y: '30vh',
@@ -159,13 +173,18 @@ export default function AppPage() {
         )}
        </AnimatePresence>
 
-       {!isDetailsVisible && (
-        <RemoteControl
-            onOk={() => setIsDetailsVisible(true)}
-            onNext={() => {}}
-            onPrev={() => {}}
-        />
-       )}
+       <RemoteControl
+          variant={isDetailsVisible ? 'capsule' : 'circle'}
+          onOk={() => {
+            if (isDetailsVisible) {
+                router.back();
+            } else {
+                setIsDetailsVisible(true);
+            }
+          }}
+          onNext={isDetailsVisible ? handleNext : () => {}}
+          onPrev={isDetailsVisible ? handlePrev : () => {}}
+       />
     </div>
   );
 }
