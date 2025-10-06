@@ -125,59 +125,60 @@ export default function DashboardPage() {
       </div>
     );
   }
-
+  
   const titleVariants = {
     hidden: { opacity: 0, y: -20 },
     visible: { opacity: 1, y: 0 },
     exit: { opacity: 0, y: 20 },
   };
 
+
   return (
-    <div className="h-screen bg-background text-foreground flex flex-col items-center justify-center">
-      <main className="container mx-auto p-4 md:p-8 flex flex-col items-center justify-center">
-        
-        <div className="text-center h-16 flex items-center">
-             <AnimatePresence mode="wait">
-                <motion.h1
-                    key={current}
-                    className="font-headline text-3xl md:text-4xl font-bold"
-                    variants={titleVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    transition={{ duration: 0.3, ease: 'easeInOut' }}
-                >
-                    {allServices[current]?.name}
-                </motion.h1>
-             </AnimatePresence>
-        </div>
+    <div className="h-screen bg-background text-foreground flex flex-col">
+      <div className="flex-1 flex flex-col items-center justify-center">
+        <main className="container mx-auto p-4 md:p-8 flex flex-col items-center justify-center">
+            <div className="text-center h-16 flex items-center">
+                <AnimatePresence mode="wait">
+                    <motion.h1
+                        key={current}
+                        className="font-headline text-3xl md:text-4xl font-bold"
+                        variants={titleVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    >
+                        {allServices[current]?.name}
+                    </motion.h1>
+                </AnimatePresence>
+            </div>
 
-        <LayoutGroup>
-          <section className="w-full">
-            <Carousel setApi={setApi} opts={{ align: "center", loop: true }} className="w-full">
-              <CarouselContent>
-                {allServices.map((app, index) => (
-                  <CarouselItem key={app.id} className="basis-1/3 sm:basis-1/3 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                    <div className="p-1 h-full" data-id={app.id}>
-                      <ServerCard
-                        id={app.id}
-                        name={app.name}
-                        url={app.url}
-                        icon={app.icon}
-                        status={statuses[app.id] || 'loading'}
-                        animationDelay={index * 0.05}
-                        color={app.color}
-                        isSelected={current === index}
-                      />
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-          </section>
-        </LayoutGroup>
-
-      </main>
+            <LayoutGroup>
+            <section className="w-full">
+                <Carousel setApi={setApi} opts={{ align: "center", loop: true }} className="w-full">
+                <CarouselContent>
+                    {allServices.map((app, index) => (
+                    <CarouselItem key={app.id} className="basis-1/2 sm:basis-1/3 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                        <div className="p-1 h-full" data-id={app.id}>
+                        <ServerCard
+                            id={app.id}
+                            name={app.name}
+                            url={app.url}
+                            icon={app.icon}
+                            status={statuses[app.id] || 'loading'}
+                            animationDelay={index * 0.05}
+                            color={app.color}
+                            isSelected={current === index}
+                        />
+                        </div>
+                    </CarouselItem>
+                    ))}
+                </CarouselContent>
+                </Carousel>
+            </section>
+            </LayoutGroup>
+        </main>
+      </div>
       <RemoteControl
         variant="circle" 
         onNext={handleSelectNext}
