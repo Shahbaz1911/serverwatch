@@ -135,7 +135,7 @@ export default function DashboardPage() {
             <Carousel setApi={setApi} opts={{ align: "center", loop: true }} className="w-full">
               <CarouselContent>
                 {allServices.map((app, index) => (
-                  <CarouselItem key={app.id} className="basis-1/2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                  <CarouselItem key={app.id} className="basis-4/5 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                     <div className="p-1 h-full" data-id={app.id}>
                       <ServerCard
                         id={app.id}
