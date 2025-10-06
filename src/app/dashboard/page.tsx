@@ -8,7 +8,6 @@ import { SERVER_APPS, MY_PROJECTS } from "@/lib/config";
 import { useUser } from "@/firebase";
 import { RemoteControl } from "@/components/remote-control";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
-import { AIAlerts } from "@/components/ai-alerts";
 import { LayoutGroup } from "framer-motion";
 
 const allServices = [...SERVER_APPS, ...MY_PROJECTS];
@@ -119,13 +118,6 @@ export default function DashboardPage() {
     }
   }, [checkAllStatuses, user]);
 
-  const hasOfflineService = Object.values(statuses).includes('offline');
-
-  const serverNames = allServices.reduce((acc, srv) => {
-    acc[srv.id] = srv.name;
-    return acc;
-  }, {} as Record<string, string>);
-
   if (isUserLoading || !user || initialLoad) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -162,12 +154,6 @@ export default function DashboardPage() {
             </Carousel>
           </section>
         </LayoutGroup>
-
-        {hasOfflineService && (
-          <section>
-            <AIAlerts statuses={statuses} serverNames={serverNames} />
-          </section>
-        )}
 
       </main>
       <RemoteControl 
