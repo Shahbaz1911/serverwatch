@@ -24,16 +24,14 @@ export default function DashboardPage() {
 
   const [initialLoad, setInitialLoad] = useState(true);
   
-  const [serverAppsApi, setServerAppsApi] = useState<CarouselApi>();
-  const [myProjectsApi, setMyProjectsApi] = useState<CarouselApi>();
+  const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   
-  const apis = useRef<CarouselApi[]>([]);
+  const onSelect = useCallback(() => {
+    if (!api) return;
+    setCurrent(api.selectedScrollSnap());
+  }, [api]);
 
-  useEffect(() => {
-    if (serverAppsApi) apis.current[0] = serverAppsApi;
-    if (myProjectsApi) apis.current[1] = myProjectsApi;
-  }, [serverAppsApi, myProjectsApi]);
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -68,51 +66,23 @@ export default function DashboardPage() {
     if(initialLoad) setInitialLoad(false);
   }, [initialLoad]);
 
-  const onSelect = useCallback(() => {
-    const serverAppsIndex = serverAppsApi?.selectedScrollSnap() ?? -1;
-    const myProjectsIndex = myProjectsApi?.selectedScrollSnap() ?? -1;
-    
-    if (serverAppsIndex !== -1 && (current < SERVER_APPS.length)) {
-      setCurrent(serverAppsIndex);
-    } else if (myProjectsIndex !== -1 && (current >= SERVER_APPS.length)) {
-        setCurrent(SERVER_APPS.length + myProjectsIndex);
-    } else if (serverAppsIndex !== -1) { // Transitioning from projects to apps
-        setCurrent(serverAppsIndex);
-    } else if (myProjectsIndex !== -1) { // Transitioning from apps to projects
-        setCurrent(SERVER_APPS.length + myProjectsIndex);
-    }
-  }, [serverAppsApi, myProjectsApi, current]);
 
   useEffect(() => {
-    serverAppsApi?.on("select", onSelect);
-    myProjectsApi?.on("select", onSelect);
+    if (!api) return;
+    onSelect();
+    api.on("select", onSelect);
     return () => {
-        serverAppsApi?.off("select", onSelect);
-        myProjectsApi?.off("select", onSelect);
+      api.off("select", onSelect);
     };
-  }, [serverAppsApi, myProjectsApi, onSelect]);
+  }, [api, onSelect]);
 
   const handleSelectNext = useCallback(() => {
-    if (current < SERVER_APPS.length -1) {
-        serverAppsApi?.scrollNext();
-    } else if (current === SERVER_APPS.length - 1) {
-        myProjectsApi?.scrollTo(0);
-        setCurrent(SERVER_APPS.length);
-    } else if (current < allServices.length -1 ) {
-        myProjectsApi?.scrollNext();
-    }
-  }, [current, serverAppsApi, myProjectsApi]);
+    api?.scrollNext();
+  }, [api]);
 
   const handleSelectPrev = useCallback(() => {
-    if (current > SERVER_APPS.length) {
-        myProjectsApi?.scrollPrev();
-    } else if (current === SERVER_APPS.length) {
-        serverAppsApi?.scrollTo(SERVER_APPS.length - 1);
-        setCurrent(SERVER_APPS.length - 1);
-    } else if (current > 0) {
-        serverAppsApi?.scrollPrev();
-    }
-  }, [current, serverAppsApi, myProjectsApi]);
+    api?.scrollPrev();
+  }, [api]);
 
   const handleConfirm = useCallback(() => {
     if (current >= 0 && current < allServices.length) {
@@ -157,9 +127,10 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <main className="container mx-auto p-4 md:p-8 pt-24 md:pt-32 space-y-12">
+        
         <section>
           <h2 className="font-headline text-3xl font-bold mb-4">Server Apps</h2>
-          <Carousel setApi={setServerAppsApi} opts={{ align: "start", containScroll: "trimSnaps" }} className="w-full">
+          <Carousel setApi={setApi} opts={{ align: "start", containScroll: "trimSnaps" }} className="w-full">
             <CarouselContent>
               {SERVER_APPS.map((app, index) => (
                 <CarouselItem key={app.id} className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
@@ -181,8 +152,8 @@ export default function DashboardPage() {
         </section>
 
         <section>
-        <h2 className="font-headline text-3xl font-bold mb-4">My Projects</h2>
-          <Carousel setApi={setMyProjectsApi} opts={{ align: "start", containScroll: "trimSnaps" }} className="w-full">
+          <h2 className="font-headline text-3xl font-bold mb-4">My Projects</h2>
+          <Carousel opts={{ align: "start", containScroll: "trimSnaps" }} className="w-full">
             <CarouselContent>
               {MY_PROJECTS.map((app, index) => (
                 <CarouselItem key={app.id} className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
