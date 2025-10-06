@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CardNav } from '@/components/ui/card-nav';
 import { Server, LogOut, User as UserIcon } from 'lucide-react';
 import { useAuth, useUser } from "@/firebase";
@@ -15,16 +15,30 @@ export function AppHeader() {
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = async () => {
     if (auth) {
-      await auth.signOut();
-      toast({
-        variant: "destructive",
-        title: "Logout Successful",
-        description: "You have been logged out.",
-      });
-      router.push("/");
+      try {
+        await auth.signOut();
+        toast({
+            variant: "destructive",
+            title: "Logout Successful",
+            description: "You have been logged out.",
+        });
+        router.push("/");
+      } catch (error) {
+        console.error("Logout failed:", error);
+        toast({
+            variant: "destructive",
+            title: "Logout Failed",
+            description: "An error occurred during logout. Please try again.",
+        });
+      }
     }
   };
 
@@ -51,6 +65,34 @@ export function AppHeader() {
     },
   ];
 
+  const renderProfileAction = () => {
+    if (!mounted || isUserLoading) {
+      return null; // Don't render anything on the server or while loading
+    }
+    if (user) {
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Avatar className="h-8 w-8 cursor-pointer">
+              <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
+              <AvatarFallback>
+                <UserIcon className="h-4 w-4" />
+              </AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Logout</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    }
+    return null; // Or a login button if you prefer
+  };
+
+
   return (
       <CardNav
         items={navItems}
@@ -65,26 +107,7 @@ export function AppHeader() {
             </div>
         }
         logoAlt="ServerWatch Logo"
-        profileAction={
-            !isUserLoading && user && (
-                 <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Avatar className="h-8 w-8 cursor-pointer">
-                            <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
-                            <AvatarFallback>
-                                <UserIcon className="h-4 w-4" />
-                            </AvatarFallback>
-                        </Avatar>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={handleLogout}>
-                            <LogOut className="mr-2 h-4 w-4" />
-                            <span>Logout</span>
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            )
-        }
+        profileAction={renderProfileAction()}
     />
   );
 };
