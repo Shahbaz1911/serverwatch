@@ -19,7 +19,7 @@ export function RemoteControl({ onPrev, onNext, onOk, variant = 'circle' }: Remo
   useEffect(() => {
     if (shapeRef.current && okButtonRef.current) {
         gsap.to(shapeRef.current, {
-            borderRadius: isCapsule ? '9999px' : '9999px',
+            borderRadius: '9999px',
             width: isCapsule ? '14rem' : '11rem',
             height: isCapsule ? '6rem' : '11rem',
             duration: 0.5,
@@ -27,7 +27,7 @@ export function RemoteControl({ onPrev, onNext, onOk, variant = 'circle' }: Remo
         });
 
         gsap.to(okButtonRef.current, {
-          rotate: isCapsule ? 0 : 0,
+          rotate: 0,
           opacity: 1,
           duration: 0.2,
         })
@@ -43,6 +43,7 @@ export function RemoteControl({ onPrev, onNext, onOk, variant = 'circle' }: Remo
         ref={shapeRef}
         className={cn(
             "relative flex items-center justify-center border-2 border-border transition-all duration-300",
+            "w-[11rem] h-[11rem] rounded-full"
         )}
       >
         
