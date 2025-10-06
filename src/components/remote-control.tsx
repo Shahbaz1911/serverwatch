@@ -11,7 +11,8 @@ interface RemoteControlProps {
 export function RemoteControl({ onPrev, onNext, onOk }: RemoteControlProps) {
   return (
     <div className="fixed bottom-8 right-1/2 translate-x-1/2 md:right-8 md:translate-x-0 z-50 flex items-center justify-center">
-      <div className="relative flex h-36 w-36 items-center justify-center rounded-full bg-transparent">
+      <div className="relative flex h-36 w-36 items-center justify-center rounded-full">
+        <span className="absolute -top-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">Menu</span>
         {/* Left Button */}
         <Button
           size="icon"
@@ -27,11 +28,9 @@ export function RemoteControl({ onPrev, onNext, onOk }: RemoteControlProps) {
           onClick={onOk}
           aria-label="Select Item"
           className={cn(
-            "z-10 h-16 w-16 rounded-full border-2 border-border bg-background shadow-inner flex items-center justify-center cursor-pointer group"
+            "z-10 h-12 w-12 rounded-full border-2 border-border bg-background shadow-inner flex items-center justify-center cursor-pointer group transition-colors hover:bg-muted"
           )}
-        >
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-background/80 shadow-md transition-colors group-hover:bg-muted" />
-        </div>
+        />
 
         {/* Right Button */}
         <Button
