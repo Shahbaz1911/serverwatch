@@ -131,7 +131,7 @@ export default function DashboardPage() {
         <section>
           <Carousel setApi={setApi} opts={{ align: "start", containScroll: "trimSnaps" }} className="w-full">
             <CarouselContent>
-              {SERVER_APPS.map((app, index) => (
+              {allServices.map((app, index) => (
                 <CarouselItem key={app.id} className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                   <div className="p-1 h-full">
                     <ServerCard
@@ -142,28 +142,6 @@ export default function DashboardPage() {
                       animationDelay={index * 0.05}
                       color={app.color}
                       isSelected={current === index}
-                    />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
-        </section>
-
-        <section>
-          <Carousel opts={{ align: "start", containScroll: "trimSnaps" }} className="w-full">
-            <CarouselContent>
-              {MY_PROJECTS.map((app, index) => (
-                <CarouselItem key={app.id} className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                  <div className="p-1 h-full">
-                    <ServerCard
-                      name={app.name}
-                      url={app.url}
-                      icon={app.icon}
-                      status={statuses[app.id] || 'loading'}
-                      animationDelay={(SERVER_APPS.length + index) * 0.05}
-                      color={app.color}
-                      isSelected={current === SERVER_APPS.length + index}
                     />
                   </div>
                 </CarouselItem>
