@@ -9,7 +9,6 @@ import { useUser } from "@/firebase";
 import { Separator } from "@/components/ui/separator";
 import { Hero } from "@/components/hero";
 import { RemoteControl } from "@/components/remote-control";
-import { SystemOverview } from "@/components/system-overview";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
 import { Card } from "@/components/ui/card";
 
@@ -32,7 +31,7 @@ export default function DashboardPage() {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
-    if (!isUserLoading && !user) {
+    if (!isUserLoading && user) {
       router.push("/");
     }
   }, [user, isUserLoading, router]);
@@ -135,13 +134,6 @@ export default function DashboardPage() {
       <main className="container mx-auto p-4 md:p-8 pt-24 md:pt-32">
         
         <Hero />
-
-        <Separator className="my-8" />
-        
-        <section id="system-overview" className="mb-12">
-            <h2 className="mb-6 font-headline text-3xl font-bold">System Overview</h2>
-            <SystemOverview />
-        </section>
 
         <Separator className="my-8" />
 
