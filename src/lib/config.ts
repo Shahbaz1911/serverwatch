@@ -10,9 +10,9 @@ export interface MonitoredService {
 }
 
 export const SERVER_APPS: MonitoredService[] = [
-  { id: 'portainer', name: 'Portainer', url: 'http://localhost:9000', icon: Server, color: 'blue' },
-  { id: 'netdata', name: 'Netdata', url: 'http://localhost:19999', icon: LineChart, color: 'green' },
-  { id: 'n8n', name: 'n8n', url: 'http://localhost:5678', icon: Zap, color: 'purple' },
+  { id: 'portainer', name: 'Portainer', url: 'https://portainer.shahbaz.online/#!/auth', icon: Server, color: 'blue' },
+  { id: 'netdata', name: 'Netdata', url: 'https://netdata.shahbaz.online/', icon: LineChart, color: 'green' },
+  { id: 'n8n', name: 'n8n', url: 'https://n8n.shahbaz.online/', icon: Zap, color: 'purple' },
   { id: 'nextcloud', name: 'Nextcloud', url: 'http://localhost:8080', icon: Cloud, color: 'indigo' },
   { id: 'cockpit', name: 'Cockpit', url: 'http://localhost:9090', icon: KanbanSquare, color: 'red' },
 ];
