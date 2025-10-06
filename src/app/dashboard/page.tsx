@@ -8,6 +8,7 @@ import { SERVER_APPS, MY_PROJECTS } from "@/lib/config";
 import { useUser } from "@/firebase";
 import { RemoteControl } from "@/components/remote-control";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
+import { AIAlerts } from "@/components/ai-alerts";
 
 const allServices = [...SERVER_APPS, ...MY_PROJECTS];
 
@@ -85,10 +86,12 @@ export default function DashboardPage() {
   }, [api]);
 
   const handleConfirm = useCallback(() => {
-    if (current >= 0 && current < allServices.length) {
-      window.open(allServices[current].url, '_blank', 'noopener,noreferrer');
+    // This will now trigger the dialog if a card is selected
+    const cardElement = document.querySelector(`[data-id="${allServices[current].id}"]`);
+    if (cardElement instanceof HTMLElement) {
+      cardElement.click();
     }
-  }, [current]);
+  }, [api, current]);
   
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -116,6 +119,13 @@ export default function DashboardPage() {
     }
   }, [checkAllStatuses, user]);
 
+  const hasOfflineService = Object.values(statuses).includes('offline');
+
+  const serverNames = allServices.reduce((acc, srv) => {
+    acc[srv.id] = srv.name;
+    return acc;
+  }, {} as Record<string, string>);
+
   if (isUserLoading || !user || initialLoad) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -133,7 +143,7 @@ export default function DashboardPage() {
             <CarouselContent>
               {allServices.map((app, index) => (
                 <CarouselItem key={app.id} className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                  <div className="p-1 h-full">
+                  <div className="p-1 h-full" data-id={app.id}>
                     <ServerCard
                       name={app.name}
                       url={app.url}
@@ -142,6 +152,8 @@ export default function DashboardPage() {
                       animationDelay={index * 0.05}
                       color={app.color}
                       isSelected={current === index}
+                      port={app.port}
+                      uptime={app.uptime}
                     />
                   </div>
                 </CarouselItem>
@@ -149,6 +161,12 @@ export default function DashboardPage() {
             </CarouselContent>
           </Carousel>
         </section>
+
+        {hasOfflineService && (
+          <section>
+            <AIAlerts statuses={statuses} serverNames={serverNames} />
+          </section>
+        )}
 
       </main>
       <RemoteControl 
