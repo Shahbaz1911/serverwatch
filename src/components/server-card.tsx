@@ -6,7 +6,7 @@ import type { Status } from "./status-dot";
 import { GlassIcon } from "./glass-icon";
 import { Skeleton } from "./ui/skeleton";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 type ServerCardProps = {
   id: string;
@@ -32,7 +32,20 @@ export const ServerCard = React.forwardRef<HTMLDivElement, ServerCardProps>(
             <Skeleton className="h-6 w-32" />
           </>
         ) : (
-          <>
+          <div className="relative">
+            <AnimatePresence>
+                {isSelected && (
+                    <motion.span
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-medium text-muted-foreground"
+                    >
+                        Selected
+                    </motion.span>
+                )}
+            </AnimatePresence>
              <motion.div layoutId={`card-container-${id}`} onClick={() => router.push(`/dashboard/app/${id}`)} className="cursor-pointer">
                  <GlassIcon 
                     icon={<Icon className="w-full h-full" />} 
@@ -42,7 +55,7 @@ export const ServerCard = React.forwardRef<HTMLDivElement, ServerCardProps>(
                     customClass="w-24 h-24"
                  />
              </motion.div>
-          </>
+          </div>
         )}
       </CardContent>
     );
