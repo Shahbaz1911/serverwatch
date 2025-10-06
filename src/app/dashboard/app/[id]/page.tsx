@@ -182,12 +182,6 @@ export default function AppPage() {
                     </motion.div>
                    
                 </div>
-                
-                <motion.div variants={itemVariants}>
-                    <Button onClick={handleOpenLink} size="lg" className="mt-4">
-                        Open Service <ArrowUpRight className="ml-2 h-4 w-4" />
-                    </Button>
-                </motion.div>
 
             </motion.div>
         )}
