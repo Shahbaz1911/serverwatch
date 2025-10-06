@@ -86,12 +86,11 @@ export default function DashboardPage() {
   }, [api]);
 
   const handleConfirm = useCallback(() => {
-    // This will now trigger the dialog if a card is selected
-    const cardElement = document.querySelector(`[data-id="${allServices[current].id}"]`);
-    if (cardElement instanceof HTMLElement) {
-      cardElement.click();
+    const serviceId = allServices[current]?.id;
+    if (serviceId) {
+      router.push(`/dashboard/app/${serviceId}`);
     }
-  }, [api, current]);
+  }, [api, current, router]);
   
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -145,6 +144,7 @@ export default function DashboardPage() {
                 <CarouselItem key={app.id} className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                   <div className="p-1 h-full" data-id={app.id}>
                     <ServerCard
+                      id={app.id}
                       name={app.name}
                       url={app.url}
                       icon={app.icon}
@@ -152,8 +152,6 @@ export default function DashboardPage() {
                       animationDelay={index * 0.05}
                       color={app.color}
                       isSelected={current === index}
-                      port={app.port}
-                      uptime={app.uptime}
                     />
                   </div>
                 </CarouselItem>
