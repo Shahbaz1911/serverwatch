@@ -3,13 +3,14 @@
 import { useParams, useRouter } from 'next/navigation';
 import { SERVER_APPS, MY_PROJECTS } from '@/lib/config';
 import { Button } from '@/components/ui/button';
-import { ArrowUpRight, ArrowLeft, Server, Power, Globe } from 'lucide-react';
+import { ArrowUpRight, ArrowLeft, Server, Power, Globe, ToggleRight } from 'lucide-react';
 import { StatusDot } from '@/components/status-dot';
 import { useEffect, useState } from 'react';
 import type { Status } from '@/components/status-dot';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GlassIcon } from '@/components/glass-icon';
 import { RemoteControl } from '@/components/remote-control';
+import { Switch } from '@/components/ui/switch';
 
 const allServices = [...SERVER_APPS, ...MY_PROJECTS];
 
@@ -22,14 +23,22 @@ export default function AppPage() {
   const service = allServices[currentIndex];
 
   const [status, setStatus] = useState<Status>('loading');
+  const [isServiceActive, setIsServiceActive] = useState(true);
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
 
   useEffect(() => {
     if (service) {
       fetch(`/api/status?url=${encodeURIComponent(service.url)}`)
         .then(res => res.json())
-        .then(data => setStatus(data.status || 'offline'))
-        .catch(() => setStatus('offline'));
+        .then(data => {
+            const currentStatus = data.status || 'offline';
+            setStatus(currentStatus);
+            setIsServiceActive(currentStatus === 'online');
+        })
+        .catch(() => {
+            setStatus('offline');
+            setIsServiceActive(false);
+        });
     }
   }, [service]);
   
@@ -155,6 +164,22 @@ export default function AppPage() {
                             </div>
                         </motion.div>
                     )}
+                    <motion.div variants={itemVariants} className="bg-card/50 border rounded-lg p-4 flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                            <ToggleRight className="w-6 h-6 text-primary"/>
+                            <div>
+                                <p className="text-sm text-muted-foreground">Service</p>
+                                <p className="font-medium text-foreground">
+                                    {isServiceActive ? 'Running' : 'Stopped'}
+                                </p>
+                            </div>
+                        </div>
+                        <Switch
+                            checked={isServiceActive}
+                            onCheckedChange={setIsServiceActive}
+                            aria-label="Toggle service status"
+                        />
+                    </motion.div>
                    
                 </div>
                 
