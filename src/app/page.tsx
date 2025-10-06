@@ -120,7 +120,7 @@ export default function LoginPage() {
   if (isUserLoading || (user && !isSuccess)) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p>Loading...</p>
+        <span className="font-press-start text-2xl font-bold animate-pulse">ServerWatch</span>
       </div>
     );
   }

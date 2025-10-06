@@ -121,7 +121,7 @@ export default function DashboardPage() {
   if (isUserLoading || !user || initialLoad) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p>Loading...</p>
+        <span className="font-press-start text-2xl font-bold animate-pulse">ServerWatch</span>
       </div>
     );
   }
@@ -135,9 +135,9 @@ export default function DashboardPage() {
 
   return (
     <div className="h-screen bg-background text-foreground flex flex-col">
-      <div className="flex-1 flex flex-col items-center justify-center pb-20">
+      <div className="flex-1 flex flex-col items-center justify-center pb-32">
         <main className="container mx-auto p-4 md:p-8 flex flex-col items-center justify-center">
-            <div className="text-center h-16 flex items-center mb-8">
+            <div className="text-center h-16 flex items-center mb-12">
                 <AnimatePresence mode="wait">
                     <motion.h1
                         key={current}
