@@ -6,12 +6,10 @@ import { ServerCard } from "@/components/server-card";
 import type { Status } from "@/components/status-dot";
 import { SERVER_APPS, MY_PROJECTS } from "@/lib/config";
 import { useUser } from "@/firebase";
-import { Separator } from "@/components/ui/separator";
 import { RemoteControl } from "@/components/remote-control";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
 
 const allServices = [...SERVER_APPS, ...MY_PROJECTS];
-const sectionStarts = [0, SERVER_APPS.length];
 
 export default function DashboardPage() {
   const { user, isUserLoading } = useUser();
@@ -25,8 +23,17 @@ export default function DashboardPage() {
   });
 
   const [initialLoad, setInitialLoad] = useState(true);
-  const [api, setApi] = useState<CarouselApi>();
+  
+  const [serverAppsApi, setServerAppsApi] = useState<CarouselApi>();
+  const [myProjectsApi, setMyProjectsApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
+  
+  const apis = useRef<CarouselApi[]>([]);
+
+  useEffect(() => {
+    if (serverAppsApi) apis.current[0] = serverAppsApi;
+    if (myProjectsApi) apis.current[1] = myProjectsApi;
+  }, [serverAppsApi, myProjectsApi]);
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -61,25 +68,51 @@ export default function DashboardPage() {
     if(initialLoad) setInitialLoad(false);
   }, [initialLoad]);
 
-  useEffect(() => {
-    if (!api) {
-      return;
+  const onSelect = useCallback(() => {
+    const serverAppsIndex = serverAppsApi?.selectedScrollSnap() ?? -1;
+    const myProjectsIndex = myProjectsApi?.selectedScrollSnap() ?? -1;
+    
+    if (serverAppsIndex !== -1 && (current < SERVER_APPS.length)) {
+      setCurrent(serverAppsIndex);
+    } else if (myProjectsIndex !== -1 && (current >= SERVER_APPS.length)) {
+        setCurrent(SERVER_APPS.length + myProjectsIndex);
+    } else if (serverAppsIndex !== -1) { // Transitioning from projects to apps
+        setCurrent(serverAppsIndex);
+    } else if (myProjectsIndex !== -1) { // Transitioning from apps to projects
+        setCurrent(SERVER_APPS.length + myProjectsIndex);
     }
-    setCurrent(api.selectedScrollSnap());
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap());
-    });
-  }, [api]);
+  }, [serverAppsApi, myProjectsApi, current]);
+
+  useEffect(() => {
+    serverAppsApi?.on("select", onSelect);
+    myProjectsApi?.on("select", onSelect);
+    return () => {
+        serverAppsApi?.off("select", onSelect);
+        myProjectsApi?.off("select", onSelect);
+    };
+  }, [serverAppsApi, myProjectsApi, onSelect]);
 
   const handleSelectNext = useCallback(() => {
-    api?.scrollNext();
-  }, [api]);
+    if (current < SERVER_APPS.length -1) {
+        serverAppsApi?.scrollNext();
+    } else if (current === SERVER_APPS.length - 1) {
+        myProjectsApi?.scrollTo(0);
+        setCurrent(SERVER_APPS.length);
+    } else if (current < allServices.length -1 ) {
+        myProjectsApi?.scrollNext();
+    }
+  }, [current, serverAppsApi, myProjectsApi]);
 
   const handleSelectPrev = useCallback(() => {
-    api?.scrollPrev();
-  }, [api]);
-
-
+    if (current > SERVER_APPS.length) {
+        myProjectsApi?.scrollPrev();
+    } else if (current === SERVER_APPS.length) {
+        serverAppsApi?.scrollTo(SERVER_APPS.length - 1);
+        setCurrent(SERVER_APPS.length - 1);
+    } else if (current > 0) {
+        serverAppsApi?.scrollPrev();
+    }
+  }, [current, serverAppsApi, myProjectsApi]);
 
   const handleConfirm = useCallback(() => {
     if (current >= 0 && current < allServices.length) {
@@ -121,48 +154,51 @@ export default function DashboardPage() {
     );
   }
 
-  const getSectionTitle = (index: number) => {
-    if (index === sectionStarts[0]) return "Server Apps";
-    if (index === sectionStarts[1]) return "My Projects";
-    return null;
-  }
-
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <main className="container mx-auto p-4 md:p-8 pt-24 md:pt-32">
-        <section className="mb-12">
-          <Carousel setApi={setApi} opts={{
-            align: "start",
-            containScroll: "trimSnaps",
-          }} className="w-full">
+      <main className="container mx-auto p-4 md:p-8 pt-24 md:pt-32 space-y-12">
+        <section>
+          <h2 className="font-headline text-3xl font-bold mb-4">Server Apps</h2>
+          <Carousel setApi={setServerAppsApi} opts={{ align: "start", containScroll: "trimSnaps" }} className="w-full">
             <CarouselContent>
-              {allServices.map((app, index) => {
-                const sectionTitle = getSectionTitle(index);
-                return (
-                  <React.Fragment key={app.id}>
-                    {sectionTitle && (
-                      <CarouselItem className="basis-auto pl-4 md:pl-12">
-                        <div className="flex h-full items-center">
-                           <h2 className="font-headline text-3xl font-bold -rotate-90 whitespace-nowrap origin-center">{sectionTitle}</h2>
-                        </div>
-                      </CarouselItem>
-                    )}
-                    <CarouselItem className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                      <div className="p-1 h-full">
-                        <ServerCard
-                          name={app.name}
-                          url={app.url}
-                          icon={app.icon}
-                          status={statuses[app.id] || 'loading'}
-                          animationDelay={index * 0.05}
-                          color={app.color}
-                          isSelected={current === index}
-                        />
-                      </div>
-                    </CarouselItem>
-                  </React.Fragment>
-                );
-              })}
+              {SERVER_APPS.map((app, index) => (
+                <CarouselItem key={app.id} className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                  <div className="p-1 h-full">
+                    <ServerCard
+                      name={app.name}
+                      url={app.url}
+                      icon={app.icon}
+                      status={statuses[app.id] || 'loading'}
+                      animationDelay={index * 0.05}
+                      color={app.color}
+                      isSelected={current === index}
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+        </section>
+
+        <section>
+        <h2 className="font-headline text-3xl font-bold mb-4">My Projects</h2>
+          <Carousel setApi={setMyProjectsApi} opts={{ align: "start", containScroll: "trimSnaps" }} className="w-full">
+            <CarouselContent>
+              {MY_PROJECTS.map((app, index) => (
+                <CarouselItem key={app.id} className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                  <div className="p-1 h-full">
+                    <ServerCard
+                      name={app.name}
+                      url={app.url}
+                      icon={app.icon}
+                      status={statuses[app.id] || 'loading'}
+                      animationDelay={(SERVER_APPS.length + index) * 0.05}
+                      color={app.color}
+                      isSelected={current === SERVER_APPS.length + index}
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
             </CarouselContent>
           </Carousel>
         </section>
