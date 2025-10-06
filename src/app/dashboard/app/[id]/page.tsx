@@ -3,8 +3,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import { SERVER_APPS, MY_PROJECTS } from '@/lib/config';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowUpRight, ArrowLeft } from 'lucide-react';
+import { ArrowUpRight, ArrowLeft, Server, Power, Globe } from 'lucide-react';
 import { StatusDot } from '@/components/status-dot';
 import { useEffect, useState } from 'react';
 import type { Status } from '@/components/status-dot';
@@ -102,6 +101,12 @@ export default function AppPage() {
     },
   };
 
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+
   return (
     <div className="container mx-auto p-4 md:p-8 pt-12 md:pt-16 min-h-screen flex flex-col items-center">
        <motion.div
@@ -126,49 +131,48 @@ export default function AppPage() {
                 animate="visible"
                 exit="hidden"
                 variants={detailsVariants}
-                className="w-full max-w-2xl"
+                className="w-full max-w-2xl text-center space-y-8"
             >
-                <Card>
-                    <CardHeader>
-                    <CardTitle className="flex items-center justify-center gap-3 font-headline text-3xl">
-                        {service.name}
-                    </CardTitle>
-                    <CardDescription className="text-center">Detailed information for {service.name}.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                    <motion.div variants={detailsVariants} className="flex items-center justify-between rounded-lg border p-3">
-                        <span className="text-muted-foreground">Status</span>
-                        <StatusDot status={status} />
+                <motion.div variants={itemVariants}>
+                    <h1 className="font-headline text-4xl md:text-5xl font-bold">{service.name}</h1>
+                    <p className="text-muted-foreground mt-2">Detailed information for {service.name}.</p>
+                </motion.div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+                    <motion.div variants={itemVariants} className="bg-card/50 border rounded-lg p-4 flex items-center gap-4">
+                        <Power className="w-6 h-6 text-primary"/>
+                        <div>
+                            <p className="text-sm text-muted-foreground">Status</p>
+                            <StatusDot status={status} />
+                        </div>
                     </motion.div>
-                    {service.port && (
-                        <motion.div variants={detailsVariants} className="flex items-center justify-between rounded-lg border p-3">
-                        <span className="text-muted-foreground">Port</span>
-                        <span className="font-mono text-foreground">{service.port}</span>
+                     {service.port && (
+                        <motion.div variants={itemVariants} className="bg-card/50 border rounded-lg p-4 flex items-center gap-4">
+                            <Server className="w-6 h-6 text-primary"/>
+                             <div>
+                                <p className="text-sm text-muted-foreground">Port</p>
+                                <p className="font-mono text-foreground">{service.port}</p>
+                            </div>
                         </motion.div>
                     )}
-                    {service.uptime && (
-                        <motion.div variants={detailsVariants} className="flex items-center justify-between rounded-lg border p-3">
-                        <span className="text-muted-foreground">Uptime</span>
-                        <span className="font-mono text-foreground">{service.uptime}</span>
-                        </motion.div>
-                    )}
-                    <motion.div variants={detailsVariants} className="flex items-center justify-between rounded-lg border p-3">
-                        <span className="text-muted-foreground">URL</span>
-                        <a href={service.url} target="_blank" rel="noopener noreferrer" className="font-mono text-primary hover:underline truncate max-w-[200px] sm:max-w-full">
-                            {service.url}
-                        </a>
-                        </motion.div>
-                     <motion.div variants={detailsVariants} className='flex items-center justify-center gap-4'>
-                        <Button onClick={() => router.back()} className="mt-4" variant='outline'>
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Dashboard
-                        </Button>
-                        <Button onClick={handleOpenLink} className="mt-4">
-                            Open Service <ArrowUpRight className="ml-2 h-4 w-4" />
-                        </Button>
-                     </motion.div>
-                    </CardContent>
-                </Card>
+                    <motion.div variants={itemVariants} className="bg-card/50 border rounded-lg p-4 flex items-center gap-4 col-span-1 sm:col-span-2">
+                        <Globe className="w-6 h-6 text-primary"/>
+                        <div>
+                            <p className="text-sm text-muted-foreground">URL</p>
+                            <a href={service.url} target="_blank" rel="noopener noreferrer" className="font-mono text-primary hover:underline truncate max-w-[200px] sm:max-w-full block">
+                                {service.url}
+                            </a>
+                        </div>
+                    </motion.div>
+                   
+                </div>
+                
+                <motion.div variants={itemVariants}>
+                    <Button onClick={handleOpenLink} size="lg" className="mt-4">
+                        Open Service <ArrowUpRight className="ml-2 h-4 w-4" />
+                    </Button>
+                </motion.div>
+
             </motion.div>
         )}
        </AnimatePresence>
