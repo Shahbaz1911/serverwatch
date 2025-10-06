@@ -1,5 +1,6 @@
-import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from './ui/button';
+import { cn } from '@/lib/utils';
 
 interface RemoteControlProps {
   onPrev: () => void;
@@ -9,20 +10,38 @@ interface RemoteControlProps {
 
 export function RemoteControl({ onPrev, onNext, onOk }: RemoteControlProps) {
   return (
-    <div className="fixed bottom-4 right-4 z-50 rounded-full bg-background/80 p-2 shadow-lg backdrop-blur-sm border border-border">
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" onClick={onPrev} aria-label="Previous Item">
+    <div className="fixed bottom-8 right-1/2 translate-x-1/2 md:right-8 md:translate-x-0 z-50 flex items-center justify-center">
+      <div className="relative flex h-32 w-32 items-center justify-center rounded-full border border-border bg-background/80 shadow-2xl backdrop-blur-sm">
+        {/* Left Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onPrev}
+          aria-label="Previous Item"
+          className="absolute left-0 h-full w-14 rounded-l-full text-muted-foreground hover:bg-accent/50"
+        >
           <ChevronLeft className="h-6 w-6" />
         </Button>
+
+        {/* OK Button */}
         <Button
-          size="icon"
           onClick={onOk}
           aria-label="Select Item"
-          className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full h-12 w-12"
+          className="z-10 h-20 w-20 rounded-full border-2 border-border bg-background shadow-inner hover:bg-accent"
         >
-          <Check className="h-6 w-6" />
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md">
+            <span className="font-bold tracking-wider">OK</span>
+          </div>
         </Button>
-        <Button variant="ghost" size="icon" onClick={onNext} aria-label="Next Item">
+
+        {/* Right Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onNext}
+          aria-label="Next Item"
+          className="absolute right-0 h-full w-14 rounded-r-full text-muted-foreground hover:bg-accent/50"
+        >
           <ChevronRight className="h-6 w-6" />
         </Button>
       </div>
