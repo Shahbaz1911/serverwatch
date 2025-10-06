@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { CardNav } from '@/components/ui/card-nav';
 import { Server, LogOut, User as UserIcon } from 'lucide-react';
 import { useAuth, useUser } from "@/firebase";
 import { useRouter } from 'next/navigation';
@@ -9,6 +8,9 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
 import { SERVER_APPS, MY_PROJECTS } from '@/lib/config';
+import BubbleMenu from './ui/bubble-menu';
+
+const allServices = [...SERVER_APPS, ...MY_PROJECTS];
 
 export function AppHeader() {
   const { user, isUserLoading } = useUser();
@@ -42,38 +44,24 @@ export function AppHeader() {
     }
   };
 
-  const navItems = [
-    {
-      label: "Server Applications",
-      bgColor: "hsl(var(--background))",
-      textColor: "hsl(var(--foreground))",
-      links: SERVER_APPS.map(app => ({
-        label: app.name,
-        href: app.url,
-        ariaLabel: `Open ${app.name}`
-      }))
-    },
-    {
-      label: "Projects", 
-      bgColor: "hsl(var(--background))",
-      textColor: "hsl(var(--foreground))",
-      links: MY_PROJECTS.map(project => ({
-        label: project.name,
-        href: project.url,
-        ariaLabel: `Open ${project.name}`
-      }))
-    },
-  ];
+  const navItems = allServices.map((app, index) => ({
+    label: app.name,
+    href: app.url,
+    ariaLabel: `Open ${app.name}`,
+    rotation: (index % 2 === 0 ? 1 : -1) * (Math.random() * 4 + 4), // random rotation between 4-8 deg
+    hoverStyles: { bgColor: app.color, textColor: 'hsl(var(--primary-foreground))' },
+  }));
+
 
   const renderProfileAction = () => {
     if (!mounted || isUserLoading) {
-      return null; // Don't render anything on the server or while loading
+      return null;
     }
     if (user) {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Avatar className="h-8 w-8 cursor-pointer">
+            <Avatar className="h-8 w-8 cursor-pointer border-2 border-transparent hover:border-primary transition-colors">
               <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
               <AvatarFallback>
                 <UserIcon className="h-4 w-4" />
@@ -89,24 +77,19 @@ export function AppHeader() {
         </DropdownMenu>
       );
     }
-    return null; // Or a login button if you prefer
+    return null;
   };
 
 
   return (
-      <CardNav
+      <BubbleMenu
         items={navItems}
-        baseColor="hsl(var(--card))"
-        menuColor="hsl(var(--foreground))"
-        buttonBgColor="hsl(var(--primary))"
-        buttonTextColor="hsl(var(--primary-foreground))"
         logo={
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 text-foreground">
                 <Server className="h-7 w-7 text-primary" />
                 <span className="font-headline text-xl font-bold">ServerWatch</span>
             </div>
         }
-        logoAlt="ServerWatch Logo"
         profileAction={renderProfileAction()}
     />
   );
