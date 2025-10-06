@@ -121,20 +121,23 @@ export default function AppPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-8 pt-12 md:pt-16 min-h-screen flex flex-col items-center pb-32">
-       <motion.div
-        layoutId={`card-container-${id}`}
-        animate={'capsule'}
-        variants={variants}
-        className="rounded-full p-4 mb-8 bg-card border border-border"
-       >
-         <GlassIcon
-            icon={<Icon className="w-full h-full" />}
-            color={service.color || 'blue'}
-            label={service.name}
-            customClass='w-16 h-16'
-            isSelected={true}
-        />
-       </motion.div>
+       <div className="flex flex-col items-center gap-4">
+        <h1 className="font-headline text-4xl md:text-5xl font-bold">{service.name}</h1>
+        <motion.div
+            layoutId={`card-container-${id}`}
+            animate={'capsule'}
+            variants={variants}
+            className="rounded-full p-4 mb-8 bg-card border border-border"
+        >
+            <GlassIcon
+                icon={<Icon className="w-full h-full" />}
+                color={service.color || 'blue'}
+                label={service.name}
+                customClass='w-16 h-16'
+                isSelected={true}
+            />
+        </motion.div>
+       </div>
 
        <AnimatePresence>
         {isDetailsVisible && (
@@ -145,10 +148,6 @@ export default function AppPage() {
                 variants={detailsVariants}
                 className="w-full max-w-2xl text-center space-y-8"
             >
-                <motion.div variants={itemVariants}>
-                    <h1 className="font-headline text-4xl md:text-5xl font-bold">{service.name}</h1>
-                </motion.div>
-                
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
                     <motion.div variants={itemVariants} className="bg-card/50 border rounded-lg p-4 flex items-center gap-4">
                         <Power className="w-6 h-6 text-primary"/>

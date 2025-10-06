@@ -33,19 +33,6 @@ export const ServerCard = React.forwardRef<HTMLDivElement, ServerCardProps>(
           </>
         ) : (
           <div className="relative pt-6">
-            <AnimatePresence>
-                {isSelected && (
-                    <motion.span
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.3 }}
-                        className="absolute top-0 left-1/2 -translate-x-1/2 text-sm font-medium text-foreground whitespace-nowrap"
-                    >
-                        {name}
-                    </motion.span>
-                )}
-            </AnimatePresence>
              <motion.div layoutId={`card-container-${id}`} onClick={() => router.push(`/dashboard/app/${id}`)} className="cursor-pointer">
                  <GlassIcon 
                     icon={<Icon className="w-full h-full" />} 
