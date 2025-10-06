@@ -8,14 +8,8 @@ import { SERVER_APPS, MY_PROJECTS } from "@/lib/config";
 import { useUser } from "@/firebase";
 import { Separator } from "@/components/ui/separator";
 import { Hero } from "@/components/hero";
-import { AIAlerts } from "@/components/ai-alerts";
 
 const allServices = [...SERVER_APPS, ...MY_PROJECTS];
-const serviceNames = allServices.reduce((acc, srv) => {
-  acc[srv.id] = srv.name;
-  return acc;
-}, {} as Record<string, string>);
-
 
 export default function DashboardPage() {
   const { user, isUserLoading } = useUser();
@@ -79,19 +73,11 @@ export default function DashboardPage() {
     );
   }
 
-  const anyOffline = Object.values(statuses).some(s => s === 'offline');
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <main className="container mx-auto p-4 md:p-8 pt-24 md:pt-32">
         
         <Hero />
-
-        {anyOffline && (
-          <section className="my-8">
-            <AIAlerts statuses={statuses} serverNames={serviceNames} />
-          </section>
-        )}
 
         <Separator className="my-8" />
 
