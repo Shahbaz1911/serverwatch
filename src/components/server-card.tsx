@@ -37,7 +37,6 @@ export const ServerCard = React.forwardRef<HTMLDivElement, ServerCardProps>(
              <motion.div layoutId={`card-container-${id}`} onClick={() => router.push(`/dashboard/app/${id}`)} className="cursor-pointer">
                  <GlassIcon icon={<Icon className="w-[1.5em] h-[1.5em]" />} color={color} label={name} isSelected={isSelected || isHovered} />
              </motion.div>
-            <span className="font-headline text-lg text-center">{name}</span>
           </>
         )}
       </CardContent>
