@@ -127,8 +127,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <main className="container mx-auto p-4 md:p-8 pt-24 md:pt-32 space-y-8">
+    <div className="h-screen bg-background text-foreground flex items-center justify-center">
+      <main className="container mx-auto p-4 md:p-8">
         
         <LayoutGroup>
           <section>
