@@ -50,8 +50,7 @@ export const ServerCard = React.forwardRef<HTMLDivElement, ServerCardProps>(
             whileHover={{ y: -5, transition: { duration: 0.2 } }}
         >
             <Card className={cn(
-            "h-full transition-all duration-300 flex flex-col justify-center items-center p-6 border-2 min-h-[180px]",
-             isSelected ? "border-accent" : "border-transparent"
+            "h-full transition-all duration-300 flex flex-col justify-center items-center p-6 border-2 min-h-[180px] border-transparent",
             )}>
             {cardContent}
             </Card>
