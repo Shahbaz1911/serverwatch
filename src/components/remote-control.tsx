@@ -1,6 +1,5 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { Button } from './ui/button';
-import { cn } from '@/lib/utils';
 
 interface RemoteControlProps {
   onPrev: () => void;
@@ -20,7 +19,7 @@ export function RemoteControl({ onPrev, onNext, onOk }: RemoteControlProps) {
           aria-label="Previous Item"
           className="absolute left-0 h-full w-14 rounded-l-full text-muted-foreground hover:bg-accent/50"
         >
-          <ChevronLeft className="h-6 w-6" />
+          <ChevronsLeft className="h-6 w-6" />
         </Button>
 
         {/* OK Button */}
@@ -42,7 +41,7 @@ export function RemoteControl({ onPrev, onNext, onOk }: RemoteControlProps) {
           aria-label="Next Item"
           className="absolute right-0 h-full w-14 rounded-r-full text-muted-foreground hover:bg-accent/50"
         >
-          <ChevronRight className="h-6 w-6" />
+          <ChevronsRight className="h-6 w-6" />
         </Button>
       </div>
     </div>
