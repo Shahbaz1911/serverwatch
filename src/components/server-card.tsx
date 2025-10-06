@@ -13,8 +13,6 @@ type ServerCardProps = {
   status: Status;
   animationDelay: number;
   color?: string;
-  port?: number;
-  uptime?: string;
   isSelected?: boolean;
 };
 
@@ -29,12 +27,12 @@ export const ServerCard = React.forwardRef<HTMLDivElement, ServerCardProps>(
     return (
       <div
         ref={ref}
-        className="animate-fade-in-up opacity-0"
+        className="animate-fade-in-up opacity-0 h-full"
         style={{ animationDelay: `${animationDelay}s` }}
         onClick={!isLoading ? handleCardClick : undefined}
       >
         <Card className={cn(
-          "h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-center items-center p-6 cursor-pointer border-2 min-h-[120px]",
+          "h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-center items-center p-6 cursor-pointer border-2 min-h-[180px]",
           isSelected ? 'border-primary shadow-2xl -translate-y-1' : 'border-transparent hover:border-accent'
         )}>
           <CardContent className="p-0 flex flex-col items-center gap-4">

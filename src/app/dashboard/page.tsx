@@ -10,8 +10,11 @@ import { Separator } from "@/components/ui/separator";
 import { Hero } from "@/components/hero";
 import { RemoteControl } from "@/components/remote-control";
 import { SystemOverview } from "@/components/system-overview";
+import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
+import { Card } from "@/components/ui/card";
 
 const allServices = [...SERVER_APPS, ...MY_PROJECTS];
+const sectionStarts = [0, SERVER_APPS.length];
 
 export default function DashboardPage() {
   const { user, isUserLoading } = useUser();
@@ -25,28 +28,14 @@ export default function DashboardPage() {
   });
 
   const [initialLoad, setInitialLoad] = useState(true);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     if (!isUserLoading && !user) {
       router.push("/");
     }
   }, [user, isUserLoading, router]);
-
-  useEffect(() => {
-    cardRefs.current = cardRefs.current.slice(0, allServices.length);
-  }, []);
-
-  useEffect(() => {
-    if (cardRefs.current[selectedIndex]) {
-      cardRefs.current[selectedIndex]?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center',
-      });
-    }
-  }, [selectedIndex]);
 
   const checkAllStatuses = useCallback(async () => {
     const promises = allServices.map(async (srv) => {
@@ -75,20 +64,32 @@ export default function DashboardPage() {
     if(initialLoad) setInitialLoad(false);
   }, [initialLoad]);
 
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+    setCurrent(api.selectedScrollSnap());
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap());
+    });
+  }, [api]);
+
   const handleSelectNext = useCallback(() => {
-    setSelectedIndex((prev) => (prev + 1) % allServices.length);
-  }, []);
+    api?.scrollNext();
+  }, [api]);
 
   const handleSelectPrev = useCallback(() => {
-    setSelectedIndex((prev) => (prev - 1 + allServices.length) % allServices.length);
-  }, []);
+    api?.scrollPrev();
+  }, [api]);
+
+
 
   const handleConfirm = useCallback(() => {
-    if (selectedIndex >= 0 && selectedIndex < allServices.length) {
-      window.open(allServices[selectedIndex].url, '_blank', 'noopener,noreferrer');
+    if (current >= 0 && current < allServices.length) {
+      window.open(allServices[current].url, '_blank', 'noopener,noreferrer');
     }
-  }, [selectedIndex]);
-
+  }, [current]);
+  
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       switch(e.key) {
@@ -123,6 +124,12 @@ export default function DashboardPage() {
     );
   }
 
+  const getSectionTitle = (index: number) => {
+    if (index === sectionStarts[0]) return "Server Apps";
+    if (index === sectionStarts[1]) return "My Projects";
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <main className="container mx-auto p-4 md:p-8 pt-24 md:pt-32">
@@ -139,49 +146,42 @@ export default function DashboardPage() {
         <Separator className="my-8" />
 
         <section className="mb-12">
-          <h2 className="mb-6 font-headline text-3xl font-bold">Server Apps</h2>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {SERVER_APPS.map((app, index) => (
-              <ServerCard
-                key={app.id}
-                ref={el => cardRefs.current[index] = el}
-                name={app.name}
-                url={app.url}
-                icon={app.icon}
-                status={statuses[app.id] || 'loading'}
-                animationDelay={index * 0.05}
-                color={app.color}
-                port={app.port}
-                uptime={app.uptime}
-                isSelected={selectedIndex === index}
-              />
-            ))}
-          </div>
+          <Carousel setApi={setApi} opts={{
+            align: "start",
+            containScroll: "trimSnaps",
+          }} className="w-full">
+            <CarouselContent>
+              {allServices.map((app, index) => {
+                const sectionTitle = getSectionTitle(index);
+                return (
+                  <React.Fragment key={app.id}>
+                    {sectionTitle && (
+                      <CarouselItem className="basis-auto pl-4 md:pl-12">
+                        <div className="flex h-full items-center">
+                           <h2 className="font-headline text-3xl font-bold -rotate-90 whitespace-nowrap origin-center">{sectionTitle}</h2>
+                        </div>
+                      </CarouselItem>
+                    )}
+                    <CarouselItem className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                      <div className="p-1 h-full">
+                        <ServerCard
+                          name={app.name}
+                          url={app.url}
+                          icon={app.icon}
+                          status={statuses[app.id] || 'loading'}
+                          animationDelay={index * 0.05}
+                          color={app.color}
+                          isSelected={current === index}
+                        />
+                      </div>
+                    </CarouselItem>
+                  </React.Fragment>
+                );
+              })}
+            </CarouselContent>
+          </Carousel>
         </section>
 
-        <section>
-          <h2 className="mb-6 font-headline text-3xl font-bold">My Projects</h2>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {MY_PROJECTS.map((project, index) => {
-              const overallIndex = SERVER_APPS.length + index;
-              return (
-                <ServerCard
-                  key={project.id}
-                  ref={el => cardRefs.current[overallIndex] = el}
-                  name={project.name}
-                  url={project.url}
-                  icon={project.icon}
-                  status={statuses[project.id] || 'loading'}
-                  animationDelay={overallIndex * 0.05}
-                  color={project.color}
-                  port={project.port}
-                  uptime={project.uptime}
-                  isSelected={selectedIndex === overallIndex}
-                />
-              );
-            })}
-          </div>
-        </section>
       </main>
       <RemoteControl 
         onNext={handleSelectNext}
