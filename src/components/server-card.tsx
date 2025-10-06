@@ -33,7 +33,7 @@ export const ServerCard = React.forwardRef<HTMLDivElement, ServerCardProps>(
       >
         <Card className={cn(
           "h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-center items-center p-6 cursor-pointer border-2 min-h-[180px]",
-          isSelected ? 'border-primary shadow-2xl -translate-y-1' : 'border-transparent hover:border-accent'
+          "border-transparent hover:border-accent"
         )}>
           <CardContent className="p-0 flex flex-col items-center gap-4">
             {isLoading ? (
@@ -43,7 +43,7 @@ export const ServerCard = React.forwardRef<HTMLDivElement, ServerCardProps>(
               </>
             ) : (
               <>
-                <GlassIcon icon={<Icon className="w-[1.5em] h-[1.5em]" />} color={color} label={name} />
+                <GlassIcon icon={<Icon className="w-[1.5em] h-[1.5em]" />} color={color} label={name} isSelected={isSelected} />
                 <span className="font-headline text-lg text-center">{name}</span>
               </>
             )}

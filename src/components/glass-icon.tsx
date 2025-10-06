@@ -6,6 +6,7 @@ export interface GlassIconItem {
   color: string;
   label: string;
   customClass?: string;
+  isSelected?: boolean;
 }
 
 const gradientMapping: Record<string, string> = {
@@ -24,12 +25,13 @@ const getBackgroundStyle = (color: string): React.CSSProperties => {
     return { background: color };
 };
 
-export const GlassIcon: React.FC<GlassIconItem> = ({ icon, color, label, customClass }) => {
+export const GlassIcon: React.FC<GlassIconItem> = ({ icon, color, label, customClass, isSelected }) => {
     return (
         <div
           aria-label={label}
-          className={cn(`relative w-[3em] h-[3em] [perspective:24em] [transform-style:preserve-3d] group`,
-            customClass
+          className={cn(`relative w-[3em] h-[3em] [perspective:24em] [transform-style:preserve-3d] group transition-transform duration-300`,
+            customClass,
+            isSelected ? 'scale-110' : ''
           )}
         >
           <span
