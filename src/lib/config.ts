@@ -7,19 +7,21 @@ export interface MonitoredService {
   url: string;
   icon: LucideIcon;
   color: string;
+  port?: number;
+  uptime?: string;
 }
 
 export const SERVER_APPS: MonitoredService[] = [
-  { id: 'portainer', name: 'Portainer', url: 'https://portainor.shahbaz.online/', icon: Server, color: 'blue' },
-  { id: 'netdata', name: 'Netdata', url: 'https://netdata.shahbaz.online/', icon: LineChart, color: 'green' },
-  { id: 'n8n', name: 'n8n', url: 'https://n8n.shahbaz.online/', icon: Zap, color: 'purple' },
-  { id: 'nextcloud', name: 'Nextcloud', url: 'http://localhost:8080', icon: Cloud, color: 'indigo' },
-  { id: 'cockpit', name: 'Cockpit', url: 'http://localhost:9090', icon: KanbanSquare, color: 'red' },
+  { id: 'portainer', name: 'Portainer', url: 'https://portainor.shahbaz.online/', icon: Server, color: 'blue', port: 9443, uptime: '99.8%' },
+  { id: 'netdata', name: 'Netdata', url: 'https://netdata.shahbaz.online/', icon: LineChart, color: 'green', port: 19999, uptime: '99.9%' },
+  { id: 'n8n', name: 'n8n', url: 'https://n8n.shahbaz.online/', icon: Zap, color: 'purple', port: 5678, uptime: '99.7%' },
+  { id: 'nextcloud', name: 'Nextcloud', url: 'http://localhost:8080', icon: Cloud, color: 'indigo', port: 8080, uptime: '100%' },
+  { id: 'cockpit', name: 'Cockpit', url: 'http://localhost:9090', icon: KanbanSquare, color: 'red', port: 9090, uptime: '99.9%' },
 ];
 
 export const MY_PROJECTS: MonitoredService[] = [
-  { id: 'shop-armanautoxperts', name: 'shop.armanautoxperts.in', url: 'https://shop.armanautoxperts.in', icon: ShoppingCart, color: 'orange' },
-  { id: 'gallery-armanautoxperts', name: 'gallery.armanautoxperts.in', url: 'https://gallery.armanautoxperts.in', icon: GalleryHorizontal, color: 'red' },
-  { id: 'personal-portfolio', name: 'Portfolio', url: 'https://shahbaz.info/', icon: Code, color: 'blue' },
-  { id: 'another-project', name: 'Another Project', url: 'https://example.dev', icon: Globe, color: 'green' },
+  { id: 'shop-armanautoxperts', name: 'shop.armanautoxperts.in', url: 'https://shop.armanautoxperts.in', icon: ShoppingCart, color: 'orange', port: 443, uptime: '100%'},
+  { id: 'gallery-armanautoxperts', name: 'gallery.armanautoxperts.in', url: 'https://gallery.armanautoxperts.in', icon: GalleryHorizontal, color: 'red', port: 443, uptime: '100%' },
+  { id: 'personal-portfolio', name: 'Portfolio', url: 'https://shahbaz.info/', icon: Code, color: 'blue', port: 443, uptime: '100%' },
+  { id: 'another-project', name: 'Another Project', url: 'https://example.dev', icon: Globe, color: 'green', port: 443, uptime: '100%' },
 ];

@@ -107,6 +107,8 @@ export default function DashboardPage() {
                 status={statuses[app.id] || 'loading'}
                 animationDelay={index * 0.05}
                 color={app.color}
+                port={app.port}
+                uptime={app.uptime}
               />
             ))}
           </div>
@@ -124,6 +126,8 @@ export default function DashboardPage() {
                 status={statuses[project.id] || 'loading'}
                 animationDelay={(SERVER_APPS.length + index) * 0.05}
                 color={project.color}
+                port={project.port}
+                uptime={project.uptime}
               />
             ))}
           </div>
