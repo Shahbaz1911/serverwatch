@@ -9,6 +9,7 @@ import { useUser } from "@/firebase";
 import { RemoteControl } from "@/components/remote-control";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
 import { AIAlerts } from "@/components/ai-alerts";
+import { LayoutGroup } from "framer-motion";
 
 const allServices = [...SERVER_APPS, ...MY_PROJECTS];
 
@@ -137,28 +138,30 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-background text-foreground">
       <main className="container mx-auto p-4 md:p-8 pt-24 md:pt-32 space-y-8">
         
-        <section>
-          <Carousel setApi={setApi} opts={{ align: "center", loop: true }} className="w-full">
-            <CarouselContent>
-              {allServices.map((app, index) => (
-                <CarouselItem key={app.id} className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                  <div className="p-1 h-full" data-id={app.id}>
-                    <ServerCard
-                      id={app.id}
-                      name={app.name}
-                      url={app.url}
-                      icon={app.icon}
-                      status={statuses[app.id] || 'loading'}
-                      animationDelay={index * 0.05}
-                      color={app.color}
-                      isSelected={current === index}
-                    />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
-        </section>
+        <LayoutGroup>
+          <section>
+            <Carousel setApi={setApi} opts={{ align: "center", loop: true }} className="w-full">
+              <CarouselContent>
+                {allServices.map((app, index) => (
+                  <CarouselItem key={app.id} className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                    <div className="p-1 h-full" data-id={app.id}>
+                      <ServerCard
+                        id={app.id}
+                        name={app.name}
+                        url={app.url}
+                        icon={app.icon}
+                        status={statuses[app.id] || 'loading'}
+                        animationDelay={index * 0.05}
+                        color={app.color}
+                        isSelected={current === index}
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          </section>
+        </LayoutGroup>
 
         {hasOfflineService && (
           <section>
