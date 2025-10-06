@@ -8,7 +8,7 @@ import { SERVER_APPS, MY_PROJECTS } from "@/lib/config";
 import { useUser } from "@/firebase";
 import { RemoteControl } from "@/components/remote-control";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
-import { LayoutGroup } from "framer-motion";
+import { LayoutGroup, motion, AnimatePresence } from "framer-motion";
 
 const allServices = [...SERVER_APPS, ...MY_PROJECTS];
 
@@ -126,16 +126,38 @@ export default function DashboardPage() {
     );
   }
 
+  const titleVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: 20 },
+  };
+
   return (
-    <div className="h-screen bg-background text-foreground flex items-center justify-center">
-      <main className="container mx-auto p-4 md:p-8">
+    <div className="h-screen bg-background text-foreground flex flex-col items-center justify-center">
+      <main className="container mx-auto p-4 md:p-8 flex flex-col items-center justify-center">
         
+        <div className="text-center h-16 flex items-center">
+             <AnimatePresence mode="wait">
+                <motion.h1
+                    key={current}
+                    className="font-headline text-3xl md:text-4xl font-bold"
+                    variants={titleVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                >
+                    {allServices[current]?.name}
+                </motion.h1>
+             </AnimatePresence>
+        </div>
+
         <LayoutGroup>
-          <section>
+          <section className="w-full">
             <Carousel setApi={setApi} opts={{ align: "center", loop: true }} className="w-full">
               <CarouselContent>
                 {allServices.map((app, index) => (
-                  <CarouselItem key={app.id} className="basis-1/2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                  <CarouselItem key={app.id} className="basis-1/3 sm:basis-1/3 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                     <div className="p-1 h-full" data-id={app.id}>
                       <ServerCard
                         id={app.id}
