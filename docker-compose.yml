@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  serverwatch:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: serverwatch_app
+    ports:
+      - "9002:9002"
+    # To allow the container to access services running on your host machine (like Netdata),
+    # you can use host.docker.internal on Docker Desktop or set up an extra_hosts entry.
+    # For Docker on Linux, you might need to add '--network="host"' or configure networking differently.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
