@@ -34,10 +34,10 @@ export default function AppPage() {
   }, [service]);
   
   useEffect(() => {
+    // Start with details visible
+    setIsDetailsVisible(true);
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        setIsDetailsVisible(true);
-      }
        if (e.key === 'Escape') {
         router.push('/dashboard');
       }
@@ -111,7 +111,7 @@ export default function AppPage() {
     <div className="container mx-auto p-4 md:p-8 pt-12 md:pt-16 min-h-screen flex flex-col items-center">
        <motion.div
         layoutId={`card-container-${id}`}
-        animate={isDetailsVisible ? 'capsule' : 'initial'}
+        animate={'capsule'}
         variants={variants}
         className="rounded-full p-4 mb-8 bg-card border border-border"
        >
@@ -138,7 +138,7 @@ export default function AppPage() {
                     <p className="text-muted-foreground mt-2">Detailed information for {service.name}.</p>
                 </motion.div>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
                     <motion.div variants={itemVariants} className="bg-card/50 border rounded-lg p-4 flex items-center gap-4">
                         <Power className="w-6 h-6 text-primary"/>
                         <div>
@@ -155,15 +155,6 @@ export default function AppPage() {
                             </div>
                         </motion.div>
                     )}
-                    <motion.div variants={itemVariants} className="bg-card/50 border rounded-lg p-4 flex items-center gap-4 col-span-1 sm:col-span-2">
-                        <Globe className="w-6 h-6 text-primary"/>
-                        <div>
-                            <p className="text-sm text-muted-foreground">URL</p>
-                            <a href={service.url} target="_blank" rel="noopener noreferrer" className="font-mono text-primary hover:underline truncate max-w-[200px] sm:max-w-full block">
-                                {service.url}
-                            </a>
-                        </div>
-                    </motion.div>
                    
                 </div>
                 
@@ -178,16 +169,12 @@ export default function AppPage() {
        </AnimatePresence>
 
        <RemoteControl
-          variant={isDetailsVisible ? 'capsule' : 'circle'}
+          variant={'capsule'}
           onOk={() => {
-            if (isDetailsVisible) {
-                router.push('/dashboard');
-            } else {
-                setIsDetailsVisible(true);
-            }
+            router.push('/dashboard');
           }}
-          onNext={isDetailsVisible ? handleNext : () => {}}
-          onPrev={isDetailsVisible ? handlePrev : () => {}}
+          onNext={handleNext}
+          onPrev={handlePrev}
        />
     </div>
   );
