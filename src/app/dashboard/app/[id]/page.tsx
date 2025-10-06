@@ -64,6 +64,10 @@ export default function AppPage() {
     setIsServiceActive(isChecked);
     if (isChecked && service) {
       window.open(service.url, '_blank', 'noopener,noreferrer');
+      // Reset the switch to 'off' after a short delay
+      setTimeout(() => {
+        setIsServiceActive(false);
+      }, 100);
     }
   };
 
