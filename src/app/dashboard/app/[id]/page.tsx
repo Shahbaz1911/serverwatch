@@ -84,6 +84,11 @@ export default function AppPage() {
         delay: 0.2
       }
     },
+    exit: {
+      scale: 1.5,
+      y: '30vh',
+      transition: { ease: 'easeIn', duration: 0.3 }
+    }
   };
   
   const detailsVariants = {
@@ -97,6 +102,10 @@ export default function AppPage() {
         when: 'beforeChildren',
       }
     },
+    exit: {
+      opacity: 0,
+      transition: { duration: 0.2 }
+    }
   };
 
   const itemVariants = {
@@ -108,10 +117,21 @@ export default function AppPage() {
   return (
     <div className="container mx-auto p-4 md:p-8 pt-12 md:pt-16 min-h-screen flex flex-col items-center pb-32">
        <div className="flex flex-col items-center gap-4">
-        <h1 className="font-headline text-4xl md:text-5xl font-bold">{service.name}</h1>
+        <AnimatePresence>
+        {!isNavigatingBack && (
+            <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+            className="font-headline text-4xl md:text-5xl font-bold">{service.name}
+          </motion.h1>
+        )}
+        </AnimatePresence>
         <motion.div
             layoutId={`card-container-${id}`}
-            animate={'capsule'}
+            initial="initial"
+            animate={isNavigatingBack ? 'exit' : 'capsule'}
             variants={variants}
             className="rounded-full p-4 mb-8 bg-card border border-border"
         >
@@ -126,11 +146,11 @@ export default function AppPage() {
        </div>
 
        <AnimatePresence>
-        {isDetailsVisible && (
+        {isDetailsVisible && !isNavigatingBack && (
             <motion.div
                 initial="hidden"
                 animate="visible"
-                exit="hidden"
+                exit="exit"
                 variants={detailsVariants}
                 className="w-full max-w-2xl text-center space-y-8"
             >
