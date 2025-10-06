@@ -23,11 +23,11 @@ export function RemoteControl({ onPrev, onNext, onOk, variant = 'circle' }: Remo
         className={cn(
             "relative flex items-center justify-center border-2 border-border transition-all duration-300",
         )}
-        initial={{ borderRadius: '9999px', width: '9rem', height: '9rem' }}
+        initial={{ borderRadius: '9999px', width: '11rem', height: '11rem' }}
         animate={{
             borderRadius: isCapsule ? '9999px' : '9999px',
-            width: isCapsule ? '12rem' : '9rem',
-            height: isCapsule ? '5rem' : '9rem'
+            width: isCapsule ? '14rem' : '11rem',
+            height: isCapsule ? '6rem' : '11rem'
         }}
         transition={{ type: 'spring', stiffness: 260, damping: 30 }}
       >
@@ -48,7 +48,7 @@ export function RemoteControl({ onPrev, onNext, onOk, variant = 'circle' }: Remo
             aria-label="Previous Item"
             className="h-full bg-transparent text-muted-foreground duration-150 hover:bg-transparent"
           >
-            <ChevronsLeft className="h-6 w-6" />
+            <ChevronsLeft className="h-8 w-8" />
           </Button>
         </motion.div>
 
@@ -58,7 +58,7 @@ export function RemoteControl({ onPrev, onNext, onOk, variant = 'circle' }: Remo
           layoutId="remote-ok-button"
           onClick={onOk}
           aria-label={isCapsule ? "Go back" : "Select Item"}
-          className="group z-10 h-12 w-12 rounded-full flex items-center justify-center cursor-pointer transition-colors"
+          className="group z-10 h-16 w-16 rounded-full flex items-center justify-center cursor-pointer transition-colors"
         >
            <div className="h-full w-full rounded-full border-2 border-border bg-background shadow-inner flex items-center justify-center cursor-pointer transition-colors group-hover:bg-muted">
              <motion.div
@@ -68,7 +68,7 @@ export function RemoteControl({ onPrev, onNext, onOk, variant = 'circle' }: Remo
                 exit={{ rotate: 90, opacity: 0 }}
                 transition={{ duration: 0.2 }}
              >
-                {isCapsule && <X className="h-6 w-6" />}
+                {isCapsule && <X className="h-8 w-8" />}
              </motion.div>
            </div>
         </motion.div>
@@ -89,7 +89,7 @@ export function RemoteControl({ onPrev, onNext, onOk, variant = 'circle' }: Remo
             aria-label="Next Item"
             className="h-full bg-transparent text-muted-foreground duration-150 hover:bg-transparent"
             >
-            <ChevronsRight className="h-6 w-6" />
+            <ChevronsRight className="h-8 w-8" />
             </Button>
         </motion.div>
       </motion.div>
