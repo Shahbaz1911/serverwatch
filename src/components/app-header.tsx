@@ -61,7 +61,7 @@ export function AppHeader() {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Avatar className="h-8 w-8 cursor-pointer border-2 border-transparent transition-colors">
+            <Avatar className="h-8 w-8 cursor-pointer transition-colors">
               <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
               <AvatarFallback>
                 <UserIcon className="h-4 w-4" />
