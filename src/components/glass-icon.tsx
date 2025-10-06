@@ -35,7 +35,10 @@ export const GlassIcon: React.FC<GlassIconItem> = ({ icon, color, label, customC
           )}
         >
           <span
-            className="absolute top-0 left-0 w-full h-full rounded-[1.25em] block transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.83,0,0.17,1)] origin-[100%_100%] rotate-[15deg] group-hover:[transform:rotate(25deg)_translate3d(-0.5em,-0.5em,0.5em)]"
+            className={cn(
+                "absolute top-0 left-0 w-full h-full rounded-[1.25em] block transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.83,0,0.17,1)] origin-[100%_100%] rotate-[15deg] group-hover:[transform:rotate(25deg)_translate3d(-0.5em,-0.5em,0.5em)]",
+                isSelected && "[transform:rotate(25deg)_translate3d(-0.5em,-0.5em,0.5em)]"
+            )}
             style={{
               ...getBackgroundStyle(color),
               boxShadow: '0.5em -0.5em 0.75em hsla(223, 10%, 10%, 0.15)'
@@ -43,7 +46,10 @@ export const GlassIcon: React.FC<GlassIconItem> = ({ icon, color, label, customC
           ></span>
 
           <span
-            className="absolute top-0 left-0 w-full h-full rounded-[1.25em] bg-[hsla(0,0%,100%,0.15)] transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.83,0,0.17,1)] origin-[80%_50%] flex backdrop-blur-[0.75em] [-webkit-backdrop-filter:blur(0.75em)] transform group-hover:[transform:translateZ(1.5em)]"
+            className={cn(
+                "absolute top-0 left-0 w-full h-full rounded-[1.25em] bg-[hsla(0,0%,100%,0.15)] transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.83,0,0.17,1)] origin-[80%_50%] flex backdrop-blur-[0.75em] [-webkit-backdrop-filter:blur(0.75em)] transform group-hover:[transform:translateZ(1.5em)]",
+                isSelected && "[transform:translateZ(1.5em)]"
+            )}
             style={{
               boxShadow: '0 0 0 0.1em hsla(0, 0%, 100%, 0.3) inset'
             }}
