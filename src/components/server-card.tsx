@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from 'next/navigation';
 import type { LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,6 +23,7 @@ export const ServerCard = React.forwardRef<HTMLDivElement, ServerCardProps>(
   ({ id, name, icon: Icon, status, animationDelay, color = 'blue', isSelected = false }, ref) => {
     const isLoading = status === 'loading';
     const router = useRouter();
+    const [isHovered, setIsHovered] = useState(false);
 
     const cardContent = (
        <CardContent className="p-0 flex flex-col items-center gap-4">
@@ -34,7 +35,7 @@ export const ServerCard = React.forwardRef<HTMLDivElement, ServerCardProps>(
         ) : (
           <>
              <motion.div layoutId={`card-container-${id}`} onClick={() => router.push(`/dashboard/app/${id}`)} className="cursor-pointer">
-                 <GlassIcon icon={<Icon className="w-[1.5em] h-[1.5em]" />} color={color} label={name} isSelected={isSelected} />
+                 <GlassIcon icon={<Icon className="w-[1.5em] h-[1.5em]" />} color={color} label={name} isSelected={isSelected || isHovered} />
              </motion.div>
             <span className="font-headline text-lg text-center">{name}</span>
           </>
@@ -48,6 +49,8 @@ export const ServerCard = React.forwardRef<HTMLDivElement, ServerCardProps>(
             className="animate-fade-in-up opacity-0 h-full"
             style={{ animationDelay: `${animationDelay}s` }}
             whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
             <Card className={cn(
             "h-full transition-all duration-300 flex flex-col justify-center items-center p-6 border-2 min-h-[180px] border-transparent",
