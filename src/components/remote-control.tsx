@@ -10,14 +10,14 @@ interface RemoteControlProps {
 export function RemoteControl({ onPrev, onNext, onOk }: RemoteControlProps) {
   return (
     <div className="fixed bottom-8 right-1/2 translate-x-1/2 md:right-8 md:translate-x-0 z-50 flex items-center justify-center">
-      <div className="relative flex h-32 w-32 items-center justify-center rounded-full border border-border bg-background/80 shadow-2xl backdrop-blur-sm">
+      <div className="relative flex h-36 w-36 items-center justify-center rounded-full border border-border bg-background/80 shadow-2xl backdrop-blur-sm">
         {/* Left Button */}
         <Button
           variant="ghost"
           size="icon"
           onClick={onPrev}
           aria-label="Previous Item"
-          className="absolute left-0 h-full w-14 rounded-l-full text-muted-foreground hover:bg-accent/50"
+          className="absolute left-0 h-full w-16 rounded-l-full text-muted-foreground hover:bg-accent/50 flex items-center justify-center"
         >
           <ChevronsLeft className="h-6 w-6" />
         </Button>
@@ -39,7 +39,7 @@ export function RemoteControl({ onPrev, onNext, onOk }: RemoteControlProps) {
           size="icon"
           onClick={onNext}
           aria-label="Next Item"
-          className="absolute right-0 h-full w-14 rounded-r-full text-muted-foreground hover:bg-accent/50"
+          className="absolute right-0 h-full w-16 rounded-r-full text-muted-foreground hover:bg-accent/50 flex items-center justify-center"
         >
           <ChevronsRight className="h-6 w-6" />
         </Button>
