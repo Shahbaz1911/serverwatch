@@ -10,7 +10,7 @@ interface RemoteControlProps {
 
 export function RemoteControl({ onPrev, onNext, onOk }: RemoteControlProps) {
   return (
-    <div className="fixed bottom-8 right-1/2 translate-x-1/2 md:right-8 md:translate-x-0 z-50 flex items-center justify-center">
+    <div className="fixed bottom-8 right-1/2 translate-x-1/2 z-50 flex items-center justify-center">
       <div className="relative flex h-36 w-36 items-center justify-center rounded-full border-2 border-border">
         <span className="absolute -top-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">Menu</span>
         {/* Left Button */}
