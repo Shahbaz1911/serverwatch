@@ -29,9 +29,9 @@ export const GlassIcon: React.FC<GlassIconItem> = ({ icon, color, label, customC
     return (
         <div
           aria-label={label}
-          className={cn(`relative w-[3em] h-[3em] [perspective:24em] [transform-style:preserve-3d] group transition-transform duration-300`,
+          className={cn(`relative w-[3em] h-[3em] [perspective:24em] [transform-style:preserve-3d] group transition-all duration-300`,
             customClass,
-            isSelected ? 'scale-110' : ''
+            isSelected ? 'scale-110 grayscale-0' : 'grayscale'
           )}
         >
           <span
