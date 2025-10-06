@@ -9,9 +9,10 @@ interface RemoteControlProps {
   onNext: () => void;
   onOk: () => void;
   variant?: 'circle' | 'capsule';
+  onAnimationComplete?: () => void;
 }
 
-export function RemoteControl({ onPrev, onNext, onOk, variant = 'circle' }: RemoteControlProps) {
+export function RemoteControl({ onPrev, onNext, onOk, variant = 'circle', onAnimationComplete }: RemoteControlProps) {
   const isCapsule = variant === 'capsule';
   const shapeRef = useRef<HTMLDivElement>(null);
   const okButtonRef = useRef<HTMLDivElement>(null);
@@ -19,20 +20,21 @@ export function RemoteControl({ onPrev, onNext, onOk, variant = 'circle' }: Remo
   useEffect(() => {
     if (shapeRef.current && okButtonRef.current) {
         gsap.to(shapeRef.current, {
-            borderRadius: '9999px',
+            borderRadius: isCapsule ? '6rem' : '9999px',
             width: isCapsule ? '14rem' : '11rem',
             height: isCapsule ? '6rem' : '11rem',
             duration: 0.5,
-            ease: 'power3.inOut'
+            ease: 'power3.inOut',
+            onComplete: onAnimationComplete
         });
 
         gsap.to(okButtonRef.current, {
-          rotate: 0,
+          rotate: isCapsule ? 0 : 360,
           opacity: 1,
           duration: 0.2,
         })
     }
-  }, [isCapsule]);
+  }, [isCapsule, onAnimationComplete]);
 
 
   return (

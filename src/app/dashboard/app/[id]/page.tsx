@@ -25,6 +25,7 @@ export default function AppPage() {
   const [status, setStatus] = useState<Status>('loading');
   const [isServiceActive, setIsServiceActive] = useState(true);
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
+  const [isNavigatingBack, setIsNavigatingBack] = useState(false);
 
   useEffect(() => {
     if (service) {
@@ -48,13 +49,16 @@ export default function AppPage() {
 
     const handleKeyDown = (e: KeyboardEvent) => {
        if (e.key === 'Escape') {
-        router.push('/dashboard');
+        setIsNavigatingBack(true);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [router]);
+  }, []);
 
+  const handleGoBack = () => {
+    setIsNavigatingBack(true);
+  };
 
   if (!service) {
     return (
@@ -65,24 +69,6 @@ export default function AppPage() {
   }
   
   const Icon = service.icon;
-  
-  const handleNext = () => {
-    const nextIndex = (currentIndex + 1) % allServices.length;
-    router.push(`/dashboard/app/${allServices[nextIndex].id}`);
-  };
-
-  const handlePrev = () => {
-    const prevIndex = (currentIndex - 1 + allServices.length) % allServices.length;
-    router.push(`/dashboard/app/${allServices[prevIndex].id}`);
-  };
-
-  const handleServiceToggle = (checked: boolean) => {
-    setIsServiceActive(checked);
-    if (checked) {
-      window.open(service.url, '_blank', 'noopener,noreferrer');
-    }
-  };
-
 
   const variants = {
     initial: { scale: 1.5, y: '30vh',
@@ -177,7 +163,7 @@ export default function AppPage() {
                         </div>
                         <Switch
                             checked={isServiceActive}
-                            onCheckedChange={handleServiceToggle}
+                            onCheckedChange={setIsServiceActive}
                             aria-label="Toggle service status"
                         />
                     </motion.div>
@@ -189,12 +175,15 @@ export default function AppPage() {
        </AnimatePresence>
 
        <RemoteControl
-          variant={'capsule'}
-          onOk={() => {
-            router.push('/dashboard');
-          }}
+          variant={isNavigatingBack ? 'circle' : 'capsule'}
+          onOk={handleGoBack}
           onNext={() => router.push('/dashboard')}
           onPrev={() => router.push('/dashboard')}
+          onAnimationComplete={() => {
+            if (isNavigatingBack) {
+              router.push('/dashboard');
+            }
+          }}
        />
     </div>
   );
