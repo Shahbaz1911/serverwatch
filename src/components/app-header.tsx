@@ -86,8 +86,7 @@ export function AppHeader() {
         items={navItems}
         logo={
             <div className="flex items-center gap-2 text-foreground">
-                <Server className="h-7 w-7 text-primary" />
-                <span className="font-headline text-xl font-bold">ServerWatch</span>
+                <span className="font-press-start text-xl font-bold">ServerWatch</span>
             </div>
         }
         profileAction={renderProfileAction()}
