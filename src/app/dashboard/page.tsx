@@ -137,7 +137,7 @@ export default function DashboardPage() {
     <div className="h-screen bg-background text-foreground flex flex-col">
       <div className="flex-1 flex flex-col items-center justify-center">
         <main className="container mx-auto p-4 md:p-8 flex flex-col items-center justify-center">
-            <div className="text-center h-16 flex items-center">
+            <div className="text-center h-16 flex items-center mb-4">
                 <AnimatePresence mode="wait">
                     <motion.h1
                         key={current}
