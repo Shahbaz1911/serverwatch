@@ -7,10 +7,8 @@ import type { Status } from "@/components/status-dot";
 import { SERVER_APPS, MY_PROJECTS } from "@/lib/config";
 import { useUser } from "@/firebase";
 import { Separator } from "@/components/ui/separator";
-import { Hero } from "@/components/hero";
 import { RemoteControl } from "@/components/remote-control";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
-import { Card } from "@/components/ui/card";
 
 const allServices = [...SERVER_APPS, ...MY_PROJECTS];
 const sectionStarts = [0, SERVER_APPS.length];
@@ -31,7 +29,7 @@ export default function DashboardPage() {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
-    if (!isUserLoading && user) {
+    if (!isUserLoading && !user) {
       router.push("/");
     }
   }, [user, isUserLoading, router]);
@@ -132,11 +130,6 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <main className="container mx-auto p-4 md:p-8 pt-24 md:pt-32">
-        
-        <Hero />
-
-        <Separator className="my-8" />
-
         <section className="mb-12">
           <Carousel setApi={setApi} opts={{
             align: "start",
