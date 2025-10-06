@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { ServerCard } from "@/components/server-card";
 import type { Status } from "@/components/status-dot";
@@ -126,10 +126,9 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <main className="container mx-auto p-4 md:p-8 pt-24 md:pt-32 space-y-12">
+      <main className="container mx-auto p-4 md:p-8 pt-24 md:pt-32 space-y-8">
         
         <section>
-          <h2 className="font-headline text-3xl font-bold mb-4">Server Apps</h2>
           <Carousel setApi={setApi} opts={{ align: "start", containScroll: "trimSnaps" }} className="w-full">
             <CarouselContent>
               {SERVER_APPS.map((app, index) => (
@@ -152,7 +151,6 @@ export default function DashboardPage() {
         </section>
 
         <section>
-          <h2 className="font-headline text-3xl font-bold mb-4">My Projects</h2>
           <Carousel opts={{ align: "start", containScroll: "trimSnaps" }} className="w-full">
             <CarouselContent>
               {MY_PROJECTS.map((app, index) => (
