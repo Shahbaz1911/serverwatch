@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ServerCard } from "@/components/server-card";
 import type { Status } from "@/components/status-dot";
@@ -8,6 +8,8 @@ import { SERVER_APPS, MY_PROJECTS } from "@/lib/config";
 import { useUser } from "@/firebase";
 import { Separator } from "@/components/ui/separator";
 import { Hero } from "@/components/hero";
+import { RemoteControl } from "@/components/remote-control";
+import { SystemOverview } from "@/components/system-overview";
 
 const allServices = [...SERVER_APPS, ...MY_PROJECTS];
 
@@ -23,12 +25,28 @@ export default function DashboardPage() {
   });
 
   const [initialLoad, setInitialLoad] = useState(true);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     if (!isUserLoading && !user) {
       router.push("/");
     }
   }, [user, isUserLoading, router]);
+
+  useEffect(() => {
+    cardRefs.current = cardRefs.current.slice(0, allServices.length);
+  }, []);
+
+  useEffect(() => {
+    if (cardRefs.current[selectedIndex]) {
+      cardRefs.current[selectedIndex]?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center',
+      });
+    }
+  }, [selectedIndex]);
 
   const checkAllStatuses = useCallback(async () => {
     const promises = allServices.map(async (srv) => {
@@ -57,6 +75,38 @@ export default function DashboardPage() {
     if(initialLoad) setInitialLoad(false);
   }, [initialLoad]);
 
+  const handleSelectNext = useCallback(() => {
+    setSelectedIndex((prev) => (prev + 1) % allServices.length);
+  }, []);
+
+  const handleSelectPrev = useCallback(() => {
+    setSelectedIndex((prev) => (prev - 1 + allServices.length) % allServices.length);
+  }, []);
+
+  const handleConfirm = useCallback(() => {
+    if (selectedIndex >= 0 && selectedIndex < allServices.length) {
+      window.open(allServices[selectedIndex].url, '_blank', 'noopener,noreferrer');
+    }
+  }, [selectedIndex]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch(e.key) {
+        case 'ArrowRight':
+          handleSelectNext();
+          break;
+        case 'ArrowLeft':
+          handleSelectPrev();
+          break;
+        case 'Enter':
+          handleConfirm();
+          break;
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleSelectNext, handleSelectPrev, handleConfirm]);
+
   useEffect(() => {
     if(user) {
       checkAllStatuses();
@@ -80,6 +130,13 @@ export default function DashboardPage() {
         <Hero />
 
         <Separator className="my-8" />
+        
+        <section id="system-overview" className="mb-12">
+            <h2 className="mb-6 font-headline text-3xl font-bold">System Overview</h2>
+            <SystemOverview />
+        </section>
+
+        <Separator className="my-8" />
 
         <section className="mb-12">
           <h2 className="mb-6 font-headline text-3xl font-bold">Server Apps</h2>
@@ -87,6 +144,7 @@ export default function DashboardPage() {
             {SERVER_APPS.map((app, index) => (
               <ServerCard
                 key={app.id}
+                ref={el => cardRefs.current[index] = el}
                 name={app.name}
                 url={app.url}
                 icon={app.icon}
@@ -95,6 +153,7 @@ export default function DashboardPage() {
                 color={app.color}
                 port={app.port}
                 uptime={app.uptime}
+                isSelected={selectedIndex === index}
               />
             ))}
           </div>
@@ -103,22 +162,32 @@ export default function DashboardPage() {
         <section>
           <h2 className="mb-6 font-headline text-3xl font-bold">My Projects</h2>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {MY_PROJECTS.map((project, index) => (
-              <ServerCard
-                key={project.id}
-                name={project.name}
-                url={project.url}
-                icon={project.icon}
-                status={statuses[project.id] || 'loading'}
-                animationDelay={(SERVER_APPS.length + index) * 0.05}
-                color={project.color}
-                port={project.port}
-                uptime={project.uptime}
-              />
-            ))}
+            {MY_PROJECTS.map((project, index) => {
+              const overallIndex = SERVER_APPS.length + index;
+              return (
+                <ServerCard
+                  key={project.id}
+                  ref={el => cardRefs.current[overallIndex] = el}
+                  name={project.name}
+                  url={project.url}
+                  icon={project.icon}
+                  status={statuses[project.id] || 'loading'}
+                  animationDelay={overallIndex * 0.05}
+                  color={project.color}
+                  port={project.port}
+                  uptime={project.uptime}
+                  isSelected={selectedIndex === overallIndex}
+                />
+              );
+            })}
           </div>
         </section>
       </main>
+      <RemoteControl 
+        onNext={handleSelectNext}
+        onPrev={handleSelectPrev}
+        onOk={handleConfirm}
+      />
     </div>
   );
 }
