@@ -65,10 +65,6 @@ export default function AppPage() {
   }
   
   const Icon = service.icon;
-
-  const handleOpenLink = () => {
-    window.open(service.url, '_blank', 'noopener,noreferrer');
-  };
   
   const handleNext = () => {
     const nextIndex = (currentIndex + 1) % allServices.length;
@@ -78,6 +74,13 @@ export default function AppPage() {
   const handlePrev = () => {
     const prevIndex = (currentIndex - 1 + allServices.length) % allServices.length;
     router.push(`/dashboard/app/${allServices[prevIndex].id}`);
+  };
+
+  const handleServiceToggle = (checked: boolean) => {
+    setIsServiceActive(checked);
+    if (checked) {
+      window.open(service.url, '_blank', 'noopener,noreferrer');
+    }
   };
 
 
@@ -176,7 +179,7 @@ export default function AppPage() {
                         </div>
                         <Switch
                             checked={isServiceActive}
-                            onCheckedChange={setIsServiceActive}
+                            onCheckedChange={handleServiceToggle}
                             aria-label="Toggle service status"
                         />
                     </motion.div>
