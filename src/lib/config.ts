@@ -15,7 +15,7 @@ export const SERVER_APPS: MonitoredService[] = [
   { id: 'portainer', name: 'Portainer', url: 'https://portainor.shahbaz.online/', icon: Server, color: 'blue', port: 9443, uptime: '99.8%' },
   { id: 'netdata', name: 'Netdata', url: 'https://netdata.shahbaz.online/', icon: LineChart, color: 'green', port: 19999, uptime: '99.9%' },
   { id: 'n8n', name: 'n8n', url: 'https://n8n.shahbaz.online/', icon: Zap, color: 'purple', port: 5678, uptime: '99.7%' },
-  { id: 'nextcloud', name: 'Nextcloud', url: 'http://localhost:8080', icon: Cloud, color: 'indigo', port: 8080, uptime: '100%' },
+  { id: 'nextcloud', name: 'Nextcloud', url: 'https://nextcloud.shahbaz.online/', icon: Cloud, color: 'indigo', port: 8080, uptime: '100%' },
   { id: 'cockpit', name: 'Cockpit', url: 'https://cockpit.shahbaz.online/', icon: KanbanSquare, color: 'red', port: 9090, uptime: '99.9%' },
 ];
 
