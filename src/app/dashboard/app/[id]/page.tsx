@@ -9,7 +9,7 @@ import type { Status } from '@/components/status-dot';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GlassIcon } from '@/components/glass-icon';
 import { RemoteControl } from '@/components/remote-control';
-import { LaunchButton } from '@/components/launch-button';
+import StarBorder from '@/components/StarBorder';
 
 const allServices = [...SERVER_APPS, ...MY_PROJECTS];
 
@@ -176,7 +176,14 @@ export default function AppPage() {
                 </div>
                 
                 <motion.div variants={itemVariants} className="mt-8">
-                    <LaunchButton onLaunch={handleLaunch} />
+                    <StarBorder
+                        as="button"
+                        color="hsl(var(--primary))"
+                        speed="3s"
+                        onClick={handleLaunch}
+                    >
+                        Launch
+                    </StarBorder>
                 </motion.div>
 
             </motion.div>
