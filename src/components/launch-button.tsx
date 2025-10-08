@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Rocket } from 'lucide-react';
 import { gsap } from 'gsap';
@@ -12,10 +12,12 @@ interface LaunchButtonProps {
 
 export function LaunchButton({ onLaunch }: LaunchButtonProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const rocketRef = useRef<HTMLSpanElement>(null);
   const smokeContainerRef = useRef<HTMLDivElement>(null);
+  const [isLaunching, setIsLaunching] = useState(false);
 
   const handleMouseEnter = () => {
-    if (!buttonRef.current || !smokeContainerRef.current) return;
+    if (!buttonRef.current || !smokeContainerRef.current || isLaunching) return;
 
     gsap.to(buttonRef.current, {
       rotation: -5,
@@ -39,7 +41,7 @@ export function LaunchButton({ onLaunch }: LaunchButtonProps) {
   };
 
   const handleMouseLeave = () => {
-    if (!buttonRef.current || !smokeContainerRef.current) return;
+    if (!buttonRef.current || !smokeContainerRef.current || isLaunching) return;
 
     gsap.to(buttonRef.current, {
       rotation: 0,
@@ -56,19 +58,26 @@ export function LaunchButton({ onLaunch }: LaunchButtonProps) {
   };
 
   const handleClick = () => {
-    if (!buttonRef.current) return;
+    if (!rocketRef.current || isLaunching) return;
+
+    setIsLaunching(true);
 
     gsap.timeline({
       onComplete: () => {
         onLaunch();
-        // Reset button state after animation for next time
-        gsap.set(buttonRef.current, { y: 0, scale: 1, opacity: 1 });
+        // Reset state after animation and navigation
+        setTimeout(() => {
+            if (rocketRef.current) {
+               gsap.set(rocketRef.current, { y: 0, scale: 1, opacity: 1 });
+            }
+            setIsLaunching(false);
+        }, 500);
       },
-    }).to(buttonRef.current, {
-      scale: 1.2,
+    }).to(rocketRef.current, {
+      scale: 1.5,
       duration: 0.2,
       ease: 'power2.out',
-    }).to(buttonRef.current, {
+    }).to(rocketRef.current, {
       y: '-200vh',
       opacity: 0,
       duration: 1.0,
@@ -100,9 +109,12 @@ export function LaunchButton({ onLaunch }: LaunchButtonProps) {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClick={handleClick}
+        disabled={isLaunching}
       >
-        <Rocket className="mr-2 h-6 w-6" />
-        Launch
+        <span ref={rocketRef} className="inline-block">
+            <Rocket className="mr-2 h-6 w-6" />
+        </span>
+        {isLaunching ? 'Launching...' : 'Launch'}
       </Button>
     </div>
   );
