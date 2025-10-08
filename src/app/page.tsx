@@ -24,7 +24,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth, useUser } from "@/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -32,6 +31,7 @@ import { FirebaseError } from "firebase/app";
 import { Mail, KeyRound, Eye, EyeOff } from "lucide-react";
 import LiquidEther from '@/components/liquid-ether';
 import Link from "next/link";
+import { LaunchButton } from "@/components/launch-button";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -165,7 +165,7 @@ export default function LoginPage() {
             <motion.div
                 variants={shakeVariants}
                 animate={shake ? 'shake' : 'initial'}
-                className="z-10 w-full max-w-md"
+                className="z-10 w-full max-w-sm"
             >
                 <motion.div
                     variants={cardVariants}
@@ -178,8 +178,6 @@ export default function LoginPage() {
                             <div className="flex items-center justify-center gap-2 mb-4">
                                 <span className="font-press-start text-2xl font-bold">ServerWatch</span>
                             </div>
-                        <CardTitle className="font-headline text-2xl">Welcome Back</CardTitle>
-                        <CardDescription>Sign in to your ServerWatch account</CardDescription>
                         </CardHeader>
                         <CardContent>
                         <Form {...form}>
@@ -229,11 +227,7 @@ export default function LoginPage() {
                                 </FormItem>
                                 )}
                             />
-                            <div className="flex items-center justify-between text-sm">
-                                <div className="flex items-center gap-2">
-                                    <Checkbox id="remember-me" />
-                                    <label htmlFor="remember-me" className="text-muted-foreground cursor-pointer">Remember me</label>
-                                </div>
+                            <div className="flex items-center justify-end text-sm">
                                 <Link href="#" className="text-primary hover:underline">
                                     Forgot password?
                                 </Link>
@@ -244,9 +238,6 @@ export default function LoginPage() {
                             </form>
                         </Form>
                         </CardContent>
-                         <CardFooter className="text-sm text-muted-foreground justify-center">
-                            Don't have an account? <Link href="#" className="text-primary hover:underline ml-1">Sign up</Link>
-                        </CardFooter>
                     </Card>
                 </motion.div>
             </motion.div>
