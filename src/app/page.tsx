@@ -6,14 +6,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import {
   Form,
@@ -31,7 +27,7 @@ import { FirebaseError } from "firebase/app";
 import { Mail, KeyRound, Eye, EyeOff } from "lucide-react";
 import LiquidEther from '@/components/liquid-ether';
 import Link from "next/link";
-import { LaunchButton } from "@/components/launch-button";
+import StarBorder from "@/components/StarBorder";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -232,9 +228,16 @@ export default function LoginPage() {
                                     Forgot password?
                                 </Link>
                             </div>
-                            <Button type="submit" className="w-full mt-6" disabled={form.formState.isSubmitting}>
+                             <StarBorder
+                                as="button"
+                                type="submit"
+                                color="hsl(var(--primary))"
+                                speed="3s"
+                                className="w-full mt-6"
+                                disabled={form.formState.isSubmitting}
+                            >
                                 {form.formState.isSubmitting ? "Signing In..." : "Sign In"}
-                            </Button>
+                            </StarBorder>
                             </form>
                         </Form>
                         </CardContent>
