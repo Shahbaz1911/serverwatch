@@ -181,6 +181,7 @@ export default function AppPage() {
                         color="hsl(var(--primary))"
                         speed="3s"
                         onClick={handleLaunch}
+                        className="w-full max-w-xs mx-auto"
                     >
                         Launch
                     </StarBorder>
