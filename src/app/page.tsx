@@ -171,7 +171,7 @@ export default function LoginPage() {
                     exit="out"
                 >
                     <ElectricBorder color="hsl(var(--primary))" style={{ borderRadius: 'var(--radius)' }}>
-                      <Card className="w-full bg-background/80 backdrop-blur-sm border-0">
+                      <Card className="w-full bg-background border-0">
                           <CardHeader className="text-center">
                               <div className="flex items-center justify-center gap-2 mb-4">
                                   <span className="font-press-start text-2xl font-bold">ServerWatch</span>
