@@ -8,6 +8,8 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { PlaceholdersAndVanishInput } from "@/components/placeholders-and-vanish-input";
 import LiquidEther from '@/components/liquid-ether';
+import { AnimatePresence, motion } from "framer-motion";
+import { AnimatedTick } from "@/components/ui/animated-tick";
 
 export default function LoginPage() {
   const { user, isUserLoading } = useUser();
@@ -19,13 +21,15 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isMounted, setIsMounted] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
-    if (!isUserLoading && user) {
+    if (!isUserLoading && user && !loginSuccess) {
+      // If user is already logged in and we haven't just shown the success animation
       router.push("/dashboard");
     }
-  }, [user, isUserLoading, router]);
+  }, [user, isUserLoading, router, loginSuccess]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -55,12 +59,11 @@ export default function LoginPage() {
 
     try {
         await signInWithEmailAndPassword(auth, email, password);
-        toast({
-            variant: "success",
-            title: "Login Successful",
-            description: "Redirecting you to the dashboard...",
-        });
-        // The useEffect will handle the redirect
+        setLoginSuccess(true);
+        // Delay redirect to show success animation
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 1500);
     } catch (error) {
         let errorMessage = "An unknown error occurred.";
         if (error instanceof FirebaseError) {
@@ -90,7 +93,7 @@ export default function LoginPage() {
     }
   };
   
-  if (isUserLoading || (user && isMounted)) {
+  if (isUserLoading || (!isMounted && !user)) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <span className="font-press-start text-2xl font-bold animate-pulse">ServerWatch</span>
@@ -134,23 +137,47 @@ export default function LoginPage() {
           autoRampDuration={0.6}
         />
       </div>
-      <h1 className="mb-12 font-press-start text-3xl md:text-5xl font-bold text-center z-10">ServerWatch</h1>
-      <div className="z-10 w-full max-w-xl">
-        {step === 'email' ? (
-          <PlaceholdersAndVanishInput
-            placeholders={emailPlaceholders}
-            onChange={handleEmailChange}
-            onSubmit={handleEmailSubmit}
-          />
+      <AnimatePresence mode="wait">
+        {!loginSuccess ? (
+             <motion.div
+                key="login-form"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="z-10 w-full flex flex-col items-center"
+            >
+                <h1 className="mb-12 font-press-start text-3xl md:text-5xl font-bold text-center z-10">ServerWatch</h1>
+                <div className="z-10 w-full max-w-xl">
+                    {step === 'email' ? (
+                    <PlaceholdersAndVanishInput
+                        placeholders={emailPlaceholders}
+                        onChange={handleEmailChange}
+                        onSubmit={handleEmailSubmit}
+                    />
+                    ) : (
+                    <PlaceholdersAndVanishInput
+                        placeholders={passwordPlaceholders}
+                        onChange={handlePasswordChange}
+                        onSubmit={handlePasswordSubmit}
+                        type="password"
+                    />
+                    )}
+                </div>
+            </motion.div>
         ) : (
-          <PlaceholdersAndVanishInput
-            placeholders={passwordPlaceholders}
-            onChange={handlePasswordChange}
-            onSubmit={handlePasswordSubmit}
-            type="password"
-          />
+            <motion.div
+                key="success-tick"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                transition={{ duration: 0.5, type: 'spring', stiffness: 260, damping: 20 }}
+                className="z-10"
+            >
+                <AnimatedTick />
+            </motion.div>
         )}
-      </div>
+      </AnimatePresence>
     </div>
   );
 }
