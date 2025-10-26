@@ -27,8 +27,8 @@ import { FirebaseError } from "firebase/app";
 import { Mail, KeyRound, Eye, EyeOff } from "lucide-react";
 import LiquidEther from '@/components/liquid-ether';
 import Link from "next/link";
-import StarBorder from "@/components/StarBorder";
 import ElectricBorder from "@/components/ElectricBorder";
+import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -231,16 +231,13 @@ export default function LoginPage() {
                                       Forgot password?
                                   </Link>
                               </div>
-                              <StarBorder
-                                  as="button"
+                              <Button
                                   type="submit"
-                                  color="hsl(var(--primary))"
-                                  speed="3s"
                                   className="w-full mt-6"
                                   disabled={form.formState.isSubmitting}
                               >
                                   {form.formState.isSubmitting ? "Signing In..." : "Sign In"}
-                              </StarBorder>
+                              </Button>
                               </form>
                           </Form>
                           </CardContent>
