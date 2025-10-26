@@ -100,28 +100,6 @@ export default function LoginPage() {
         setPasswordAttempts(0);
         return;
       }
-
-      let errorMessage = 'An unknown error occurred.';
-      if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case 'auth/user-not-found':
-          case 'auth/wrong-password':
-          case 'auth/invalid-credential':
-            errorMessage = 'Invalid email or password.';
-            break;
-          case 'auth/invalid-email':
-            errorMessage = 'Please enter a valid email address.';
-            break;
-          default:
-            errorMessage = 'Failed to log in. Please try again.';
-            break;
-        }
-      }
-      toast({
-        variant: 'destructive',
-        title: 'Login Failed',
-        description: `${errorMessage} Attempt ${newAttempts} of 3.`,
-      });
       // We keep the password step to allow re-trying, but clear password
       setPassword('');
     }
