@@ -10,7 +10,6 @@ import { PlaceholdersAndVanishInput } from "@/components/placeholders-and-vanish
 import LiquidEther from '@/components/liquid-ether';
 import { AnimatePresence, motion } from "framer-motion";
 import { AnimatedTick } from "@/components/ui/animated-tick";
-import { ChatBubble } from "@/components/ui/chat-bubble";
 
 export default function LoginPage() {
   const { user, isUserLoading } = useUser();
@@ -159,7 +158,11 @@ export default function LoginPage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="mb-8"
               >
-                <ChatBubble>{greeting}</ChatBubble>
+                <p className="text-base uppercase font-bold">
+                    <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                        {greeting}
+                    </span>
+                </p>
               </motion.div>
             )}
           </AnimatePresence>
