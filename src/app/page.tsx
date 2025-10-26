@@ -10,6 +10,7 @@ import { PlaceholdersAndVanishInput } from "@/components/placeholders-and-vanish
 import LiquidEther from '@/components/liquid-ether';
 import { AnimatePresence, motion } from "framer-motion";
 import { AnimatedTick } from "@/components/ui/animated-tick";
+import { ChatBubble } from "@/components/ui/chat-bubble";
 
 export default function LoginPage() {
   const { user, isUserLoading } = useUser();
@@ -22,14 +23,25 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [isMounted, setIsMounted] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
+  const [greeting, setGreeting] = useState("");
 
   useEffect(() => {
     setIsMounted(true);
     if (!isUserLoading && user && !loginSuccess) {
-      // If user is already logged in and we haven't just shown the success animation
       router.push("/dashboard");
     }
   }, [user, isUserLoading, router, loginSuccess]);
+  
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) {
+      setGreeting("Good morning");
+    } else if (hour < 18) {
+      setGreeting("Good afternoon");
+    } else {
+      setGreeting("Good evening");
+    }
+  }, []);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -60,7 +72,6 @@ export default function LoginPage() {
     try {
         await signInWithEmailAndPassword(auth, email, password);
         setLoginSuccess(true);
-        // Delay redirect to show success animation
         setTimeout(() => {
           router.push("/dashboard");
         }, 1500);
@@ -86,7 +97,6 @@ export default function LoginPage() {
             title: "Login Failed",
             description: errorMessage,
         });
-        // Reset to email step on failure
         setStep('email');
         setEmail('');
         setPassword('');
@@ -137,47 +147,64 @@ export default function LoginPage() {
           autoRampDuration={0.6}
         />
       </div>
-      <AnimatePresence mode="wait">
-        {!loginSuccess ? (
-             <motion.div
-                key="login-form"
-                initial={{ opacity: 0, y: 20 }}
+
+       <div className="z-10 w-full flex flex-col items-center">
+          <h1 className="mb-8 font-press-start text-3xl md:text-5xl font-bold text-center z-10">ServerWatch</h1>
+
+          <AnimatePresence>
+            {greeting && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-                className="z-10 w-full flex flex-col items-center"
-            >
-                <h1 className="mb-12 font-press-start text-3xl md:text-5xl font-bold text-center z-10">ServerWatch</h1>
-                <div className="z-10 w-full max-w-xl">
-                    {step === 'email' ? (
-                    <PlaceholdersAndVanishInput
-                        placeholders={emailPlaceholders}
-                        onChange={handleEmailChange}
-                        onSubmit={handleEmailSubmit}
-                    />
-                    ) : (
-                    <PlaceholdersAndVanishInput
-                        placeholders={passwordPlaceholders}
-                        onChange={handlePasswordChange}
-                        onSubmit={handlePasswordSubmit}
-                        type="password"
-                    />
-                    )}
-                </div>
-            </motion.div>
-        ) : (
-            <motion.div
-                key="success-tick"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                transition={{ duration: 0.5, type: 'spring', stiffness: 260, damping: 20 }}
-                className="z-10"
-            >
-                <AnimatedTick />
-            </motion.div>
-        )}
-      </AnimatePresence>
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="mb-8"
+              >
+                <ChatBubble>{greeting}</ChatBubble>
+              </motion.div>
+            )}
+          </AnimatePresence>
+      
+          <AnimatePresence mode="wait">
+            {!loginSuccess ? (
+                <motion.div
+                    key="login-form"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="z-10 w-full flex flex-col items-center"
+                >
+                    <div className="z-10 w-full max-w-xl">
+                        {step === 'email' ? (
+                        <PlaceholdersAndVanishInput
+                            placeholders={emailPlaceholders}
+                            onChange={handleEmailChange}
+                            onSubmit={handleEmailSubmit}
+                        />
+                        ) : (
+                        <PlaceholdersAndVanishInput
+                            placeholders={passwordPlaceholders}
+                            onChange={handlePasswordChange}
+                            onSubmit={handlePasswordSubmit}
+                            type="password"
+                        />
+                        )}
+                    </div>
+                </motion.div>
+            ) : (
+                <motion.div
+                    key="success-tick"
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.5 }}
+                    transition={{ duration: 0.5, type: 'spring', stiffness: 260, damping: 20 }}
+                    className="z-10"
+                >
+                    <AnimatedTick />
+                </motion.div>
+            )}
+          </AnimatePresence>
+       </div>
     </div>
   );
 }
