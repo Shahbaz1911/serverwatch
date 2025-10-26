@@ -9,7 +9,6 @@ import { FirebaseError } from "firebase/app";
 import { PlaceholdersAndVanishInput } from "@/components/placeholders-and-vanish-input";
 import LiquidEther from '@/components/liquid-ether';
 import { AnimatePresence, motion } from "framer-motion";
-import { AnimatedTick } from "@/components/ui/animated-tick";
 
 export default function LoginPage() {
   const { user, isUserLoading } = useUser();
@@ -23,6 +22,7 @@ export default function LoginPage() {
   const [isMounted, setIsMounted] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [greeting, setGreeting] = useState("");
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -44,10 +44,12 @@ export default function LoginPage() {
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
+    if(error) setError(false);
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+    if(error) setError(false);
   };
 
   const handleEmailSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -71,10 +73,8 @@ export default function LoginPage() {
     try {
         await signInWithEmailAndPassword(auth, email, password);
         setLoginSuccess(true);
-        setTimeout(() => {
-          router.push("/dashboard");
-        }, 1500);
     } catch (error) {
+        setError(true);
         let errorMessage = "An unknown error occurred.";
         if (error instanceof FirebaseError) {
             switch (error.code) {
@@ -96,9 +96,8 @@ export default function LoginPage() {
             title: "Login Failed",
             description: errorMessage,
         });
-        setStep('email');
-        setEmail('');
-        setPassword('');
+        // We keep the password step to allow re-trying, but clear password
+        setPassword(''); 
     }
   };
   
@@ -124,9 +123,29 @@ export default function LoginPage() {
     "••••••••••••"
   ];
 
+  const onVanished = () => {
+    if (loginSuccess) {
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 500); 
+    }
+  };
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-background p-4 overflow-hidden">
+       <AnimatePresence>
+        {loginSuccess && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="fixed inset-0 bg-background z-50"
+            onAnimationComplete={() => router.push('/dashboard')}
+          />
+        )}
+       </AnimatePresence>
+
        <div className="absolute inset-0 z-0">
          <LiquidEther
           colors={[ '#a7a2b3', '#1CBB9C', '#A3F0E3' ]}
@@ -168,44 +187,35 @@ export default function LoginPage() {
           </AnimatePresence>
       
           <AnimatePresence mode="wait">
-            {!loginSuccess ? (
-                <motion.div
-                    key="login-form"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className="z-10 w-full flex flex-col items-center"
-                >
-                    <div className="z-10 w-full max-w-xl">
-                        {step === 'email' ? (
-                        <PlaceholdersAndVanishInput
-                            placeholders={emailPlaceholders}
-                            onChange={handleEmailChange}
-                            onSubmit={handleEmailSubmit}
-                        />
-                        ) : (
-                        <PlaceholdersAndVanishInput
-                            placeholders={passwordPlaceholders}
-                            onChange={handlePasswordChange}
-                            onSubmit={handlePasswordSubmit}
-                            type="password"
-                        />
-                        )}
-                    </div>
-                </motion.div>
-            ) : (
-                <motion.div
-                    key="success-tick"
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.5 }}
-                    transition={{ duration: 0.5, type: 'spring', stiffness: 260, damping: 20 }}
-                    className="z-10"
-                >
-                    <AnimatedTick />
-                </motion.div>
-            )}
+            <motion.div
+                key={step}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="z-10 w-full flex flex-col items-center"
+            >
+                <div className="z-10 w-full max-w-xl">
+                    {step === 'email' ? (
+                    <PlaceholdersAndVanishInput
+                        placeholders={emailPlaceholders}
+                        onChange={handleEmailChange}
+                        onSubmit={handleEmailSubmit}
+                        error={error}
+                        onVanishComplete={onVanished}
+                    />
+                    ) : (
+                    <PlaceholdersAndVanishInput
+                        placeholders={passwordPlaceholders}
+                        onChange={handlePasswordChange}
+                        onSubmit={handlePasswordSubmit}
+                        type="password"
+                        error={error}
+                        onVanishComplete={onVanished}
+                    />
+                    )}
+                </div>
+            </motion.div>
           </AnimatePresence>
        </div>
     </div>

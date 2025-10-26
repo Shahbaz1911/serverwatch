@@ -9,11 +9,15 @@ export function PlaceholdersAndVanishInput({
   onChange,
   onSubmit,
   type = "text",
+  error = false,
+  onVanishComplete,
 }: {
   placeholders: string[];
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   type?: string;
+  error?: boolean;
+  onVanishComplete?: () => void;
 }) {
   const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
 
@@ -146,6 +150,7 @@ export function PlaceholdersAndVanishInput({
         } else {
           setValue("");
           setAnimating(false);
+          onVanishComplete?.();
         }
       });
     };
@@ -177,13 +182,25 @@ export function PlaceholdersAndVanishInput({
     vanishAndSubmit();
     onSubmit && onSubmit(e);
   };
+
+  const jiggleVariants = {
+    initial: { x: 0 },
+    jiggle: {
+      x: [0, -5, 5, -5, 5, 0],
+      transition: { duration: 0.3, times: [0, 0.2, 0.4, 0.6, 0.8, 1] },
+    },
+  };
+
   return (
-    <form
+    <motion.form
       className={cn(
         "w-full relative max-w-xl mx-auto bg-card h-12 rounded-full overflow-hidden shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),_0px_1px_0px_0px_rgba(25,28,33,0.02),_0px_0px_0px_1px_rgba(25,28,33,0.08)] transition duration-200",
         value && "bg-muted"
       )}
       onSubmit={handleSubmit}
+      variants={jiggleVariants}
+      initial="initial"
+      animate={error ? "jiggle" : "initial"}
     >
       <canvas
         className={cn(
@@ -275,6 +292,6 @@ export function PlaceholdersAndVanishInput({
           )}
         </AnimatePresence>
       </div>
-    </form>
+    </motion.form>
   );
 }
