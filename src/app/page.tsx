@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { useAuth, useUser } from "@/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { FirebaseError } from "firebase/app";
-import { PlaceholdersAndVanishInput } from "@/components/placeholders-and-vanish-input";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
+import { useAuth, useUser } from '@/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { FirebaseError } from 'firebase/app';
+import { PlaceholdersAndVanishInput } from '@/components/placeholders-and-vanish-input';
 import LiquidEther from '@/components/liquid-ether';
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from 'framer-motion';
 
 export default function LoginPage() {
   const { user, isUserLoading } = useUser();
@@ -21,35 +21,36 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [isMounted, setIsMounted] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
-  const [greeting, setGreeting] = useState("");
+  const [greeting, setGreeting] = useState('');
   const [error, setError] = useState(false);
+  const [passwordAttempts, setPasswordAttempts] = useState(0);
 
   useEffect(() => {
     setIsMounted(true);
     if (!isUserLoading && user && !loginSuccess) {
-      router.push("/dashboard");
+      router.push('/dashboard');
     }
   }, [user, isUserLoading, router, loginSuccess]);
-  
+
   useEffect(() => {
     const hour = new Date().getHours();
     if (hour < 12) {
-      setGreeting("Good morning");
+      setGreeting('Good morning');
     } else if (hour < 18) {
-      setGreeting("Good afternoon");
+      setGreeting('Good afternoon');
     } else {
-      setGreeting("Good evening");
+      setGreeting('Good evening');
     }
   }, []);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
-    if(error) setError(false);
+    if (error) setError(false);
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-    if(error) setError(false);
+    if (error) setError(false);
   };
 
   const handleEmailSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -62,45 +63,62 @@ export default function LoginPage() {
   const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!auth) {
-        toast({
-            variant: "destructive",
-            title: "Authentication service not available.",
-            description: "Please try again later.",
-        });
-        return;
+      toast({
+        variant: 'destructive',
+        title: 'Authentication service not available.',
+        description: 'Please try again later.',
+      });
+      return;
     }
 
     try {
-        await signInWithEmailAndPassword(auth, email, password);
-        setLoginSuccess(true);
+      await signInWithEmailAndPassword(auth, email, password);
+      setPasswordAttempts(0); // Reset on success
+      setLoginSuccess(true);
     } catch (error) {
-        setError(true);
-        let errorMessage = "An unknown error occurred.";
-        if (error instanceof FirebaseError) {
-            switch (error.code) {
-                case 'auth/user-not-found':
-                case 'auth/wrong-password':
-                case 'auth/invalid-credential':
-                    errorMessage = "Invalid email or password.";
-                    break;
-                case 'auth/invalid-email':
-                    errorMessage = "Please enter a valid email address.";
-                    break;
-                default:
-                    errorMessage = "Failed to log in. Please try again.";
-                    break;
-            }
-        }
+      setError(true);
+      const newAttempts = passwordAttempts + 1;
+      setPasswordAttempts(newAttempts);
+
+      if (newAttempts >= 3) {
         toast({
-            variant: "destructive",
-            title: "Login Failed",
-            description: errorMessage,
+          variant: 'destructive',
+          title: 'Too Many Failed Attempts',
+          description: 'Please start over by entering your email again.',
         });
-        // We keep the password step to allow re-trying, but clear password
-        setPassword(''); 
+        setStep('email');
+        setEmail('');
+        setPassword('');
+        setPasswordAttempts(0);
+        return;
+      }
+
+      let errorMessage = 'An unknown error occurred.';
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'auth/user-not-found':
+          case 'auth/wrong-password':
+          case 'auth/invalid-credential':
+            errorMessage = 'Invalid email or password.';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Please enter a valid email address.';
+            break;
+          default:
+            errorMessage = 'Failed to log in. Please try again.';
+            break;
+        }
+      }
+      toast({
+        variant: 'destructive',
+        title: 'Login Failed',
+        description: `${errorMessage} Attempt ${newAttempts} of 3.`,
+      });
+      // We keep the password step to allow re-trying, but clear password
+      setPassword('');
     }
   };
-  
+
   if (isUserLoading || (!isMounted && !user)) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -111,29 +129,29 @@ export default function LoginPage() {
 
   const emailPlaceholders = [
     "What's your email address?",
-    "Enter your email to sign in",
-    "Your email goes here...",
-    "john.doe@example.com",
+    'Enter your email to sign in',
+    'Your email goes here...',
+    'john.doe@example.com',
   ];
 
   const passwordPlaceholders = [
-    "Now, your password.",
-    "Enter your password to continue",
-    "Keep it secret, keep it safe.",
-    "••••••••••••"
+    'Now, your password.',
+    'Enter your password to continue',
+    'Keep it secret, keep it safe.',
+    '••••••••••••',
   ];
 
   const onVanished = () => {
     if (loginSuccess) {
       setTimeout(() => {
-        router.push("/dashboard");
-      }, 500); 
+        router.push('/dashboard');
+      }, 500);
     }
   };
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-background p-4 overflow-hidden">
-       <AnimatePresence>
+      <AnimatePresence>
         {loginSuccess && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -144,11 +162,11 @@ export default function LoginPage() {
             onAnimationComplete={() => router.push('/dashboard')}
           />
         )}
-       </AnimatePresence>
+      </AnimatePresence>
 
-       <div className="absolute inset-0 z-0">
-         <LiquidEther
-          colors={[ '#a7a2b3', '#1CBB9C', '#A3F0E3' ]}
+      <div className="absolute inset-0 z-0">
+        <LiquidEther
+          colors={['#a7a2b3', '#1CBB9C', '#A3F0E3']}
           mouseForce={20}
           cursorSize={100}
           isViscous={false}
@@ -166,58 +184,58 @@ export default function LoginPage() {
         />
       </div>
 
-       <div className="z-10 w-full flex flex-col items-center">
-          <h1 className="mb-8 font-press-start text-3xl md:text-5xl font-bold text-center z-10">ServerWatch</h1>
+      <div className="z-10 w-full flex flex-col items-center">
+        <h1 className="mb-8 font-press-start text-3xl md:text-5xl font-bold text-center z-10">ServerWatch</h1>
 
-          <AnimatePresence>
-            {greeting && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="mb-8"
-              >
-                <p className="text-base uppercase font-bold">
-                    <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-                        {greeting}
-                    </span>
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-      
-          <AnimatePresence mode="wait">
+        <AnimatePresence>
+          {greeting && (
             <motion.div
-                key={step}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-                className="z-10 w-full flex flex-col items-center"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="mb-8"
             >
-                <div className="z-10 w-full max-w-xl">
-                    {step === 'email' ? (
-                    <PlaceholdersAndVanishInput
-                        placeholders={emailPlaceholders}
-                        onChange={handleEmailChange}
-                        onSubmit={handleEmailSubmit}
-                        error={error}
-                        onVanishComplete={onVanished}
-                    />
-                    ) : (
-                    <PlaceholdersAndVanishInput
-                        placeholders={passwordPlaceholders}
-                        onChange={handlePasswordChange}
-                        onSubmit={handlePasswordSubmit}
-                        type="password"
-                        error={error}
-                        onVanishComplete={onVanished}
-                    />
-                    )}
-                </div>
+              <p className="text-base uppercase font-bold">
+                <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                  {greeting}
+                </span>
+              </p>
             </motion.div>
-          </AnimatePresence>
-       </div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="z-10 w-full flex flex-col items-center"
+          >
+            <div className="z-10 w-full max-w-xl">
+              {step === 'email' ? (
+                <PlaceholdersAndVanishInput
+                  placeholders={emailPlaceholders}
+                  onChange={handleEmailChange}
+                  onSubmit={handleEmailSubmit}
+                  error={error}
+                  onVanishComplete={onVanished}
+                />
+              ) : (
+                <PlaceholdersAndVanishInput
+                  placeholders={passwordPlaceholders}
+                  onChange={handlePasswordChange}
+                  onSubmit={handlePasswordSubmit}
+                  type="password"
+                  error={error}
+                  onVanishComplete={onVanished}
+                />
+              )}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
