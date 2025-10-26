@@ -169,6 +169,7 @@ export default function LoginPage() {
                     initial="initial"
                     animate="in"
                     exit="out"
+                    className="p-2"
                 >
                     <ElectricBorder color="hsl(var(--primary))" style={{ borderRadius: 'var(--radius)' }}>
                       <Card className="w-full bg-background border-0">
