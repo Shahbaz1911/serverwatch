@@ -1,53 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth, useUser } from "@/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
-import { Mail, KeyRound, Eye, EyeOff } from "lucide-react";
+import { PlaceholdersAndVanishInput } from "@/components/placeholders-and-vanish-input";
 import LiquidEther from '@/components/liquid-ether';
-import Link from "next/link";
-import ElectricBorder from "@/components/ElectricBorder";
-import { Button } from "@/components/ui/button";
-
-const formSchema = z.object({
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  password: z.string().min(6, {
-    message: "Password must be at least 6 characters.",
-  }),
-});
 
 export default function LoginPage() {
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+
+  const [step, setStep] = useState('email');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isMounted, setIsMounted] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [shake, setShake] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -56,15 +27,23 @@ export default function LoginPage() {
     }
   }, [user, isUserLoading, router]);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const handleEmailSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (email) {
+      setStep('password');
+    }
+  };
+
+  const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (!auth) {
         toast({
             variant: "destructive",
@@ -75,21 +54,14 @@ export default function LoginPage() {
     }
 
     try {
-        await signInWithEmailAndPassword(auth, values.email, values.password);
+        await signInWithEmailAndPassword(auth, email, password);
         toast({
             variant: "success",
             title: "Login Successful",
             description: "Redirecting you to the dashboard...",
         });
-        setIsSuccess(true);
-        setTimeout(() => {
-             // The useEffect will handle the redirect, this just ensures animation completes
-             if (user) router.push("/dashboard");
-        }, 800)
+        // The useEffect will handle the redirect
     } catch (error) {
-        setShake(true);
-        setTimeout(() => setShake(false), 500);
-
         let errorMessage = "An unknown error occurred.";
         if (error instanceof FirebaseError) {
             switch (error.code) {
@@ -111,10 +83,14 @@ export default function LoginPage() {
             title: "Login Failed",
             description: errorMessage,
         });
+        // Reset to email step on failure
+        setStep('email');
+        setEmail('');
+        setPassword('');
     }
-  }
+  };
   
-  if (isUserLoading || (user && !isSuccess)) {
+  if (isUserLoading || (user && isMounted)) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <span className="font-press-start text-2xl font-bold animate-pulse">ServerWatch</span>
@@ -122,24 +98,25 @@ export default function LoginPage() {
     );
   }
 
-  const cardVariants = {
-    initial: { opacity: 0, y: 20 },
-    in: { opacity: 1, y: 0 },
-    out: { opacity: 0, y: -20, transition: { duration: 0.6, ease: 'easeInOut' } },
-  };
+  const emailPlaceholders = [
+    "What's your email address?",
+    "Enter your email to sign in",
+    "Your email goes here...",
+    "john.doe@example.com",
+  ];
 
-  const shakeVariants = {
-    shake: {
-      x: [0, -10, 10, -10, 10, 0],
-      transition: { duration: 0.5 },
-    },
-    initial: { x: 0 }
-  };
+  const passwordPlaceholders = [
+    "Now, your password.",
+    "Enter your password to continue",
+    "Keep it secret, keep it safe.",
+    "••••••••••••"
+  ];
+
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-background p-4">
+    <div className="relative flex min-h-screen flex-col items-center justify-center bg-background p-4 overflow-hidden">
        <div className="absolute inset-0 z-0">
-        <LiquidEther
+         <LiquidEther
           colors={[ '#a7a2b3', '#1CBB9C', '#A3F0E3' ]}
           mouseForce={20}
           cursorSize={100}
@@ -157,96 +134,23 @@ export default function LoginPage() {
           autoRampDuration={0.6}
         />
       </div>
-       <AnimatePresence>
-        {!user && isMounted && (
-            <motion.div
-                variants={shakeVariants}
-                animate={shake ? 'shake' : 'initial'}
-                className="z-10 w-full max-w-sm"
-            >
-                <motion.div
-                    variants={cardVariants}
-                    initial="initial"
-                    animate="in"
-                    exit="out"
-                    className="p-2"
-                >
-                    <ElectricBorder color="hsl(var(--primary))" style={{ borderRadius: 'var(--radius)' }}>
-                      <Card className="w-full bg-background border-0">
-                          <CardHeader className="text-center">
-                              <div className="flex items-center justify-center gap-2 mb-4">
-                                  <span className="font-press-start text-2xl font-bold">ServerWatch</span>
-                              </div>
-                          </CardHeader>
-                          <CardContent>
-                          <Form {...form}>
-                              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                              <FormField
-                                  control={form.control}
-                                  name="email"
-                                  render={({ field }) => (
-                                  <FormItem>
-                                      <FormLabel>Email</FormLabel>
-                                      <FormControl>
-                                      <div className="relative">
-                                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                          <Input placeholder="name@example.com" {...field} className="pl-10" />
-                                      </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                  </FormItem>
-                                  )}
-                              />
-                              <FormField
-                                  control={form.control}
-                                  name="password"
-                                  render={({ field }) => (
-                                  <FormItem>
-                                      <FormLabel>Password</FormLabel>
-                                      <FormControl>
-                                      <div className="relative">
-                                          <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                          <Input 
-                                              type={showPassword ? 'text' : 'password'} 
-                                              placeholder="••••••••" 
-                                              {...field} 
-                                              className="pl-10 pr-10" 
-                                          />
-                                          <button
-                                              type="button"
-                                              onClick={() => setShowPassword(prev => !prev)}
-                                              className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-                                              aria-label={showPassword ? 'Hide password' : 'Show password'}
-                                          >
-                                              {showPassword ? <EyeOff /> : <Eye />}
-                                          </button>
-                                      </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                  </FormItem>
-                                  )}
-                              />
-                              <div className="flex items-center justify-end text-sm">
-                                  <Link href="#" className="text-primary hover:underline">
-                                      Forgot password?
-                                  </Link>
-                              </div>
-                              <Button
-                                  type="submit"
-                                  className="w-full mt-6"
-                                  disabled={form.formState.isSubmitting}
-                              >
-                                  {form.formState.isSubmitting ? "Signing In..." : "Sign In"}
-                              </Button>
-                              </form>
-                          </Form>
-                          </CardContent>
-                      </Card>
-                    </ElectricBorder>
-                </motion.div>
-            </motion.div>
+      <h1 className="mb-12 font-press-start text-3xl md:text-5xl font-bold text-center z-10">ServerWatch</h1>
+      <div className="z-10 w-full max-w-xl">
+        {step === 'email' ? (
+          <PlaceholdersAndVanishInput
+            placeholders={emailPlaceholders}
+            onChange={handleEmailChange}
+            onSubmit={handleEmailSubmit}
+          />
+        ) : (
+          <PlaceholdersAndVanishInput
+            placeholders={passwordPlaceholders}
+            onChange={handlePasswordChange}
+            onSubmit={handlePasswordSubmit}
+            type="password"
+          />
         )}
-       </AnimatePresence>
+      </div>
     </div>
   );
 }
