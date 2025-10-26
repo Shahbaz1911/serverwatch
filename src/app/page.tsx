@@ -28,6 +28,7 @@ import { Mail, KeyRound, Eye, EyeOff } from "lucide-react";
 import LiquidEther from '@/components/liquid-ether';
 import Link from "next/link";
 import StarBorder from "@/components/StarBorder";
+import ElectricBorder from "@/components/ElectricBorder";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -169,79 +170,81 @@ export default function LoginPage() {
                     animate="in"
                     exit="out"
                 >
-                    <Card className="w-full bg-background/80 backdrop-blur-sm">
-                        <CardHeader className="text-center">
-                            <div className="flex items-center justify-center gap-2 mb-4">
-                                <span className="font-press-start text-2xl font-bold">ServerWatch</span>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                        <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                    <div className="relative">
-                                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                        <Input placeholder="name@example.com" {...field} className="pl-10" />
-                                    </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="password"
-                                render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Password</FormLabel>
-                                    <FormControl>
-                                    <div className="relative">
-                                        <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                        <Input 
-                                            type={showPassword ? 'text' : 'password'} 
-                                            placeholder="••••••••" 
-                                            {...field} 
-                                            className="pl-10 pr-10" 
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPassword(prev => !prev)}
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-                                            aria-label={showPassword ? 'Hide password' : 'Show password'}
-                                        >
-                                            {showPassword ? <EyeOff /> : <Eye />}
-                                        </button>
-                                    </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-                            <div className="flex items-center justify-end text-sm">
-                                <Link href="#" className="text-primary hover:underline">
-                                    Forgot password?
-                                </Link>
-                            </div>
-                             <StarBorder
-                                as="button"
-                                type="submit"
-                                color="hsl(var(--primary))"
-                                speed="3s"
-                                className="w-full mt-6"
-                                disabled={form.formState.isSubmitting}
-                            >
-                                {form.formState.isSubmitting ? "Signing In..." : "Sign In"}
-                            </StarBorder>
-                            </form>
-                        </Form>
-                        </CardContent>
-                    </Card>
+                    <ElectricBorder color="hsl(var(--primary))" style={{ borderRadius: 'var(--radius)' }}>
+                      <Card className="w-full bg-background/80 backdrop-blur-sm border-0">
+                          <CardHeader className="text-center">
+                              <div className="flex items-center justify-center gap-2 mb-4">
+                                  <span className="font-press-start text-2xl font-bold">ServerWatch</span>
+                              </div>
+                          </CardHeader>
+                          <CardContent>
+                          <Form {...form}>
+                              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                              <FormField
+                                  control={form.control}
+                                  name="email"
+                                  render={({ field }) => (
+                                  <FormItem>
+                                      <FormLabel>Email</FormLabel>
+                                      <FormControl>
+                                      <div className="relative">
+                                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                          <Input placeholder="name@example.com" {...field} className="pl-10" />
+                                      </div>
+                                      </FormControl>
+                                      <FormMessage />
+                                  </FormItem>
+                                  )}
+                              />
+                              <FormField
+                                  control={form.control}
+                                  name="password"
+                                  render={({ field }) => (
+                                  <FormItem>
+                                      <FormLabel>Password</FormLabel>
+                                      <FormControl>
+                                      <div className="relative">
+                                          <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                          <Input 
+                                              type={showPassword ? 'text' : 'password'} 
+                                              placeholder="••••••••" 
+                                              {...field} 
+                                              className="pl-10 pr-10" 
+                                          />
+                                          <button
+                                              type="button"
+                                              onClick={() => setShowPassword(prev => !prev)}
+                                              className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                                              aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                          >
+                                              {showPassword ? <EyeOff /> : <Eye />}
+                                          </button>
+                                      </div>
+                                      </FormControl>
+                                      <FormMessage />
+                                  </FormItem>
+                                  )}
+                              />
+                              <div className="flex items-center justify-end text-sm">
+                                  <Link href="#" className="text-primary hover:underline">
+                                      Forgot password?
+                                  </Link>
+                              </div>
+                              <StarBorder
+                                  as="button"
+                                  type="submit"
+                                  color="hsl(var(--primary))"
+                                  speed="3s"
+                                  className="w-full mt-6"
+                                  disabled={form.formState.isSubmitting}
+                              >
+                                  {form.formState.isSubmitting ? "Signing In..." : "Sign In"}
+                              </StarBorder>
+                              </form>
+                          </Form>
+                          </CardContent>
+                      </Card>
+                    </ElectricBorder>
                 </motion.div>
             </motion.div>
         )}
