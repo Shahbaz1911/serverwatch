@@ -140,7 +140,7 @@ export default function LoginPage() {
     <div className="relative flex min-h-screen items-center justify-center bg-background p-4">
        <div className="absolute inset-0 z-0">
         <LiquidEther
-          colors={[ '#5227FF', '#FF9FFC', '#B19EEF' ]}
+          colors={[ '#a7a2b3', '#1CBB9C', '#A3F0E3' ]}
           mouseForce={20}
           cursorSize={100}
           isViscous={false}
