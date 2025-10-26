@@ -127,7 +127,7 @@ export default function LoginPage() {
 
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center bg-background p-4 overflow-hidden">
+    <div className="relative flex min-h-screen flex-col items-center justify-start bg-background p-4 pt-32 md:pt-40 overflow-hidden">
        <div className="absolute inset-0 z-0">
          <LiquidEther
           colors={[ '#a7a2b3', '#1CBB9C', '#A3F0E3' ]}
