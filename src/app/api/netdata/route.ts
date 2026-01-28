@@ -2,7 +2,10 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Base URL for the Netdata API
-const NETDATA_BASE_URL = 'http://localhost:19999/api/v1';
+// Use 'host.docker.internal' when running inside docker-compose to reach the host machine.
+// Fallback to 'localhost' for local development without Docker.
+const NETDATA_HOST = process.env.DOCKER_NETDATA_HOST || 'localhost';
+const NETDATA_BASE_URL = `http://${NETDATA_HOST}:19999/api/v1`;
 
 async function fetchFromNetdata(url: string) {
     try {
